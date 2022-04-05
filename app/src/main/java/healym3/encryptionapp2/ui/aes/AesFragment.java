@@ -50,6 +50,9 @@ public class AesFragment extends Fragment {
 
         binding.buttonLoadBitmap.setOnClickListener(view -> {
             chooseBmpFromDevice();
+            if (imageUriOriginal!=null){
+
+            }
 //            try {
 //                encryptBitmap();
 //            } catch (IOException e) {
@@ -155,6 +158,8 @@ public class AesFragment extends Fragment {
                         .into(binding.imageViewOriginal);
                 //imageUri.
                 //bitmap
+                File inputFile = openFile(getContext());
+                Log.d("TAG", "onCreateView: " + inputFile.getPath() + " " + inputFile.isFile());
             }
         }
     }
