@@ -1,8 +1,11 @@
 package healym3.encryptionapp2.ui.aes;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,8 +20,11 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 
+import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -31,14 +37,17 @@ import javax.crypto.spec.IvParameterSpec;
 
 import healym3.encryptionapp2.algorithms.AES;
 import healym3.encryptionapp2.databinding.FragmentAesBinding;
+import healym3.encryptionapp2.util.Utils;
 
 public class AesFragment extends Fragment {
 
+    public static final String ALGORITHM = "AES/ECB/PKCS5Padding";
     private final int CHOOSE_BMP_FROM_DEVICE = 1000;
     private final String algorithm = "AES/ECB/PKCS5Padding";
     private Uri imageUriOriginal;
     private FragmentAesBinding binding;
     private SecretKey key;
+    private Bitmap originalBmp;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -53,23 +62,7 @@ public class AesFragment extends Fragment {
             if (imageUriOriginal!=null){
 
             }
-//            try {
-//                encryptBitmap();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            } catch (NoSuchPaddingException e) {
-//                e.printStackTrace();
-//            } catch (NoSuchAlgorithmException e) {
-//                e.printStackTrace();
-//            } catch (InvalidAlgorithmParameterException e) {
-//                e.printStackTrace();
-//            } catch (InvalidKeyException e) {
-//                e.printStackTrace();
-//            } catch (BadPaddingException e) {
-//                e.printStackTrace();
-//            } catch (IllegalBlockSizeException e) {
-//                e.printStackTrace();
-//            }
+
 
 
         });
@@ -83,33 +76,6 @@ public class AesFragment extends Fragment {
             binding.keyTextView2.setText(sb);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
-        }
-        Context context = getContext();
-        File directory = null;
-        if (context != null) {
-            directory = context.getFilesDir();
-        }
-        if (directory != null) {
-
-            Log.d("TAG", "onCreateView: " + directory.getPath());
-            File file = new File(directory.getPath() + "/test.bmp");
-            try {
-                givenFile_whenEncrypt_thenSuccess(file);
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (IllegalBlockSizeException e) {
-                e.printStackTrace();
-            } catch (InvalidKeyException e) {
-                e.printStackTrace();
-            } catch (BadPaddingException e) {
-                e.printStackTrace();
-            } catch (InvalidAlgorithmParameterException e) {
-                e.printStackTrace();
-            } catch (NoSuchPaddingException e) {
-                e.printStackTrace();
-            }
         }
 
 
@@ -140,6 +106,7 @@ public class AesFragment extends Fragment {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("image/*");
+        intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
         startActivityForResult(intent, CHOOSE_BMP_FROM_DEVICE);
     }
 
@@ -150,40 +117,60 @@ public class AesFragment extends Fragment {
 
             if(data != null){
                 imageUriOriginal = data.getData();
-                Log.d("TAG", "onActivityResult: " + imageUriOriginal.getPath());
-                //textView.setText(imageUriOriginal.getEncodedPath());
+//                Log.d("TAG", "onActivityResult: " + imageUriOriginal.getPath());
+
                 Glide.with(getContext())
                         .load(imageUriOriginal)
                         .fitCenter()
                         .into(binding.imageViewOriginal);
-                //imageUri.
-                //bitmap
-                File inputFile = openFile(getContext());
-                Log.d("TAG", "onCreateView: " + inputFile.getPath() + " " + inputFile.isFile());
+
+                try {
+                    InputStream inputStream = getContext().getContentResolver().openInputStream(data.getData());
+                    File originalBmpFile = new File(getContext().getFilesDir().getPath()+"/originalBmp.bmp");
+                    try {
+                        Utils.copyInputStreamToFile(inputStream,originalBmpFile);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+                File originalBmpFile = new File(getContext().getFilesDir().getPath()+"/originalBmp.bmp");
+                try {
+                    encryptOriginalFile(originalBmpFile);
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (IllegalBlockSizeException e) {
+                    e.printStackTrace();
+                } catch (InvalidKeyException e) {
+                    e.printStackTrace();
+                } catch (BadPaddingException e) {
+                    e.printStackTrace();
+                } catch (InvalidAlgorithmParameterException e) {
+                    e.printStackTrace();
+                } catch (NoSuchPaddingException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
 
-    private File openFile(Context context){
-        File file = new File(imageUriOriginal.getPath());
-        return file;
-    }
 
-    void givenFile_whenEncrypt_thenSuccess(File inputFile)
+
+    void encryptOriginalFile(File inputFile)
             throws NoSuchAlgorithmException, IOException, IllegalBlockSizeException,
             InvalidKeyException, BadPaddingException, InvalidAlgorithmParameterException,
             NoSuchPaddingException {
 
         SecretKey key = AES.generateKey(128);
-        //String algorithm = "AES/CBC/PKCS5Padding";
-        //String algorithm = "AES/ECB/NoPadding"; AES/ECB/PKCS5Padding
-        String algorithm = "AES/ECB/PKCS5Padding";
         IvParameterSpec ivParameterSpec = AES.generateIv();
 
-        //File inputFile = new DataInputStream(getAssets().open("test2.bmp"));
         File encryptedFile = new File(inputFile.getPath() + ".encrypted");
-        //File decryptedFile = new File("document.decrypted");
-        AES.encryptFile(algorithm, key, ivParameterSpec, inputFile, encryptedFile);
+        AES.encryptFile(ALGORITHM, key, ivParameterSpec, inputFile, encryptedFile);
 
 
     }
