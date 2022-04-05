@@ -20,4 +20,5 @@
     <string name="cipherToBreakHint">Enter cipher to break.</string>
     <string name="breakCipherButton">Break Cipher</string>
     <string name="breakerResultText">Substitution breaker results appear here.</string>
+    <string name="load_bitmap">Load Bitmap</string>
 </resources>
