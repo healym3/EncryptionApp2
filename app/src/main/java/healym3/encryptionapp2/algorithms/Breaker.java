@@ -1,4 +1,4 @@
-package healym3.encryptionapp2.breaker;
+package healym3.encryptionapp2.algorithms;
 
 import android.content.Context;
 import android.util.Log;

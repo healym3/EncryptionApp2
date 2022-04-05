@@ -1,12 +1,10 @@
 package healym3.encryptionapp2.ui.home;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 
 
 import androidx.annotation.NonNull;
@@ -14,8 +12,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import healym3.encryptionapp2.databinding.FragmentHomeBinding;
-import healym3.encryptionapp2.substitution.Key;
-import healym3.encryptionapp2.substitution.Substitution;
+import healym3.encryptionapp2.data.SubstitutionKey;
+import healym3.encryptionapp2.algorithms.Substitution;
 import healym3.encryptionapp2.util.Utils;
 
 public class HomeFragment extends Fragment {
@@ -23,7 +21,7 @@ public class HomeFragment extends Fragment {
     private FragmentHomeBinding binding;
 
     private Substitution substitution;
-    private Key key;
+    private SubstitutionKey key;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -33,7 +31,7 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        key = new Key();
+        key = new SubstitutionKey();
         key.setKey("defghijklmnopqrstuvwxyzabc");
         displayKey();
         //substitution = new Substitution(key);

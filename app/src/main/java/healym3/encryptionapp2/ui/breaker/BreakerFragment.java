@@ -5,13 +5,12 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import healym3.encryptionapp2.breaker.Breaker;
+import healym3.encryptionapp2.algorithms.Breaker;
 import healym3.encryptionapp2.databinding.FragmentBreakerBinding;
 import healym3.encryptionapp2.util.Utils;
 

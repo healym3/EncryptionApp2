@@ -1,19 +1,21 @@
-package healym3.encryptionapp2.substitution;
+package healym3.encryptionapp2.algorithms;
 
 import java.util.Locale;
 
+import healym3.encryptionapp2.data.SubstitutionKey;
+
 public class Substitution {
 
-    private Key key;
+    private SubstitutionKey key;
 
-    public Substitution(Key key) {
+    public Substitution(SubstitutionKey key) {
         this.key = key;
     }
 
     public Substitution() {
     }
 
-    public void setKey(Key key) {
+    public void setKey(SubstitutionKey key) {
         this.key = key;
     }
 
