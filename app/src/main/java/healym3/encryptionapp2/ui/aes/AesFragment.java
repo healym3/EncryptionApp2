@@ -81,8 +81,33 @@ public class AesFragment extends Fragment {
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
+        Context context = getContext();
+        File directory = null;
+        if (context != null) {
+            directory = context.getFilesDir();
+        }
+        if (directory != null) {
 
-
+            Log.d("TAG", "onCreateView: " + directory.getPath());
+            File file = new File(directory.getPath() + "/test.bmp");
+            try {
+                givenFile_whenEncrypt_thenSuccess(file);
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (IllegalBlockSizeException e) {
+                e.printStackTrace();
+            } catch (InvalidKeyException e) {
+                e.printStackTrace();
+            } catch (BadPaddingException e) {
+                e.printStackTrace();
+            } catch (InvalidAlgorithmParameterException e) {
+                e.printStackTrace();
+            } catch (NoSuchPaddingException e) {
+                e.printStackTrace();
+            }
+        }
 
 
         //final TextView textView = binding.textNotifications;
@@ -137,6 +162,25 @@ public class AesFragment extends Fragment {
     private File openFile(Context context){
         File file = new File(imageUriOriginal.getPath());
         return file;
+    }
+
+    void givenFile_whenEncrypt_thenSuccess(File inputFile)
+            throws NoSuchAlgorithmException, IOException, IllegalBlockSizeException,
+            InvalidKeyException, BadPaddingException, InvalidAlgorithmParameterException,
+            NoSuchPaddingException {
+
+        SecretKey key = AES.generateKey(128);
+        //String algorithm = "AES/CBC/PKCS5Padding";
+        //String algorithm = "AES/ECB/NoPadding"; AES/ECB/PKCS5Padding
+        String algorithm = "AES/ECB/PKCS5Padding";
+        IvParameterSpec ivParameterSpec = AES.generateIv();
+
+        //File inputFile = new DataInputStream(getAssets().open("test2.bmp"));
+        File encryptedFile = new File(inputFile.getPath() + ".encrypted");
+        //File decryptedFile = new File("document.decrypted");
+        AES.encryptFile(algorithm, key, ivParameterSpec, inputFile, encryptedFile);
+
+
     }
 
 }
