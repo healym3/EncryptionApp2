@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">EncryptionApp2</string>
+    <string name="title_activity_main2">MainActivity2</string>
+    <string name="title_home">Home</string>
+    <string name="title_breaker">Breaker</string>
+    <string name="title_aes">AES</string>
+    <string name="keyText">Key:</string>
+    <string name="keyPlaceholder">No active key.</string>
+    <string name="createKeyButton">Generate Key</string>
+    <string name="headerSubstitution">Substitution Cipher</string>
+    <string name="plainTextHint">Enter plain text to be encrypted.</string>
+    <string name="encryptButtonText">Encrypt</string>
+    <string name="cipherTextPlaceholder">Cipher text appears here.</string>
+    <string name="decryptButtonText">Decrypt</string>
+    <string name="cipherTextHint">Enter cipher text.</string>
+
+    <string name="customKeyHint">Enter Custom Key</string>
+    <string name="customKeyInstructions">Key must contain each letter of alphabet once.</string>
+    <string name="saveKeyButton">Save Key</string>
+    <string name="cipherToBreakHint">Enter cipher to break.</string>
+    <string name="breakCipherButton">Break Cipher</string>
+    <string name="breakerResultText">Substitution breaker results appear here.</string>
+</resources>
