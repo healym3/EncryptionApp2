@@ -46,6 +46,11 @@ public class UserFile {
     private String extension;
     private byte[] header;
     private SecretKey key;
+    private IvParameterSpec iv;
+
+    public String getFilename() {
+        return filename;
+    }
 
     public UserFile(Uri originalUri, Context context) {
         this.originalUri = originalUri;
@@ -147,7 +152,14 @@ public class UserFile {
     }
 
     public Path getValidEncryptedBitmapFilePath() {
-        return validEncryptedBitmapFilePath;
+        if(this.extension.contains("bmp"))
+            return validEncryptedBitmapFilePath;
+        else
+            return Paths.get("");
+    }
+
+    public void generateKey() throws NoSuchAlgorithmException {
+        key = AES.generateKey(128);
     }
 
     public void encryptOriginalFile()
@@ -155,13 +167,20 @@ public class UserFile {
             InvalidKeyException, BadPaddingException, InvalidAlgorithmParameterException,
             NoSuchPaddingException {
         File originalFile = getFile(appStoragePath);
-        key = AES.generateKey(128);
-        IvParameterSpec ivParameterSpec = AES.generateIv();
+        if(this.key == null){
+            generateKey();
+        }
+        iv = AES.generateIv();
         encryptedFilePath = Paths.get(appStoragePath + ".encrypted");
         File encryptedFile = new File(String.valueOf(encryptedFilePath));
-        AES.encryptFile(ALGORITHM, key, ivParameterSpec, originalFile, encryptedFile);
-        createValidBitmapFromEncrypted();
+        AES.encryptFile(ALGORITHM, key, iv, originalFile, encryptedFile);
+        if(this.extension.contains("bmp")) createValidBitmapFromEncrypted();
     }
+
+    public IvParameterSpec getIv() {
+        return iv;
+    }
+
     private void createValidBitmapFromEncrypted(){
         Log.d(TAG, "createValidBitmapFromEncrypted: " + extension + " " + Arrays.toString(header));
         if(header!=null && extension.contains("bmp")){
@@ -200,5 +219,9 @@ public class UserFile {
 
     public SecretKey getKey() {
         return key;
+    }
+
+    public void setKey(SecretKey key) {
+        this.key = key;
     }
 }

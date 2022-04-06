@@ -22,4 +22,8 @@
     <string name="breakerResultText">Substitution breaker results appear here.</string>
     <string name="load_bitmap">Load Bitmap</string>
     <string name="open_file">Open File</string>
+    <string name="file_name">FileName:</string>
+    <string name="fileNamePlaceholder">No file open.</string>
+    <string name="importKey">Import Key</string>
+    <string name="title_file_encryption">Files</string>
 </resources>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.FileEncryptionFragment">
+
+    <TextView
+        android:id="@+id/keyTextViewFileEncryption"
+        style="@style/textStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="44dp"
+        android:text="@string/keyPlaceholder"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/keyHeaderTextView"
+        app:layout_constraintTop_toBottomOf="@+id/importKeyButton" />
+
+    <TextView
+        android:id="@+id/keyHeaderTextView"
+        style="@style/textStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/keyText"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/importKeyButton" />
+
+    <Button
+        android:id="@+id/openFileButton"
+        style="@style/buttonStyle3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/open_file"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/fileNameTextView"
+        style="@style/textStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/fileNamePlaceholder"
+        app:layout_constraintBottom_toBottomOf="@+id/openFileButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/openFileButton"
+        app:layout_constraintTop_toTopOf="@+id/openFileButton" />
+
+    <Button
+        android:id="@+id/generateKeyButton"
+        style="@style/buttonStyle3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="8dp"
+        android:text="@string/createKeyButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/openFileButton" />
+
+    <Button
+        android:id="@+id/importKeyButton"
+        style="@style/buttonStyle3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginTop="23dp"
+        android:text="@string/importKey"
+        app:layout_constraintEnd_toStartOf="@+id/saveKeyAESButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/generateKeyButton" />
+
+
+
+    <Button
+        android:id="@+id/saveKeyAESButton"
+        style="@style/buttonStyle3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="8dp"
+        android:text="@string/saveKeyButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/generateKeyButton"
+        app:layout_constraintStart_toEndOf="@id/importKeyButton"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

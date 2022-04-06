@@ -53,4 +53,9 @@
             app:destination="@id/navigation_home"
             app:enterAnim="@anim/nav_default_exit_anim" />
     </fragment>
+    <fragment
+        android:id="@+id/navigation_file_encryption"
+        android:name="healym3.encryptionapp2.ui.FileEncryptionFragment"
+        android:label="file_encryption_fragment"
+        tools:layout="@layout/file_encryption_fragment" />
 </navigation>

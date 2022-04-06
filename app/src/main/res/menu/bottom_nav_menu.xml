@@ -16,4 +16,9 @@
         android:icon="@drawable/ic_notifications_black_24dp"
         android:title="@string/title_aes" />
 
+    <item
+        android:id="@+id/navigation_file_encryption"
+        android:icon="@drawable/ic_notifications_black_24dp"
+        android:title="@string/title_file_encryption" />
+
 </menu>
