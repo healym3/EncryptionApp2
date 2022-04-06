@@ -4,13 +4,16 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import java.util.Random;
+
 public class AesViewModel extends ViewModel {
 
     private final MutableLiveData<String> mText;
 
     public AesViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is notifications fragment");
+        Random random = new Random();
+        mText.setValue(String.valueOf(random.nextInt(50)));
     }
 
     public LiveData<String> getText() {
