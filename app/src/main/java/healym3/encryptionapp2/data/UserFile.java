@@ -6,6 +6,8 @@ import android.net.Uri;
 import android.provider.OpenableColumns;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -17,6 +19,7 @@ import java.nio.file.Paths;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -34,18 +37,15 @@ public class UserFile {
     public static final int DEFAULT_BUFFER_SIZE = 8192;
     public static final int BITMAP_HEADER_SIZE = 54;
     public static final String TAG = "UserFile";
-    private Uri originalUri;
+    private final Uri originalUri;
     private Path appStoragePath;
     private Path encryptedFilePath;
     private Path validEncryptedBitmapFilePath;
     private String filename;
-    private Context context;
+    private final Context context;
     private String extension;
     private byte[] header;
     private SecretKey key;
-
-    public UserFile() {
-    }
 
     public UserFile(Uri originalUri, Context context) {
         this.originalUri = originalUri;
@@ -78,15 +78,14 @@ public class UserFile {
         try {
             InputStream inputStream = new FileInputStream(String.valueOf(appStoragePath));
             header = new byte[BITMAP_HEADER_SIZE];
-            int bytesRead = -1;
-            bytesRead = inputStream.read(header);
+            int bytesRead = inputStream.read(header);
             if(bytesRead != -1){
                 StringBuilder stringBuilder = new StringBuilder();
                 for (byte b: header
                      ) {
-                    stringBuilder.append(b + ", ");
+                    stringBuilder.append(b).append(", ");
                 }
-                Log.d(TAG, "setHeader: " + stringBuilder.toString());
+                Log.d(TAG, "setHeader: " + stringBuilder);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -164,7 +163,7 @@ public class UserFile {
         createValidBitmapFromEncrypted();
     }
     private void createValidBitmapFromEncrypted(){
-        Log.d(TAG, "createValidBitmapFromEncrypted: " + extension + " " + header);
+        Log.d(TAG, "createValidBitmapFromEncrypted: " + extension + " " + Arrays.toString(header));
         if(header!=null && extension.contains("bmp")){
             validEncryptedBitmapFilePath = Paths.get(encryptedFilePath + ".bmp");
             Log.d(TAG, "createValidBitmapFromEncrypted: " + validEncryptedBitmapFilePath.toString());
@@ -175,6 +174,7 @@ public class UserFile {
                 FileInputStream inputStream = new FileInputStream(encryptedFile);
                 FileOutputStream outputStream = new FileOutputStream(validBitmapFile, false);
                 outputStream.write(header);
+                //noinspection ResultOfMethodCallIgnored
                 inputStream.skip(BITMAP_HEADER_SIZE);
                 int read;
                 byte[] bytes = new byte[DEFAULT_BUFFER_SIZE];
@@ -186,6 +186,7 @@ public class UserFile {
             }
         }
     }
+    @NonNull
     @Override
     public String toString() {
         return "UserFile{" +
