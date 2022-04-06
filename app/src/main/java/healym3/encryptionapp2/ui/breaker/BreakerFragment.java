@@ -99,19 +99,6 @@ public class BreakerFragment extends Fragment {
             if(data != null){
                 Uri uri = data.getData();
                 getTextFromFile(uri);
-//
-//
-//                AESViewModel.getUserFile().setValue(new UserFile(data.getData(), requireContext()));
-//                //userFile = new UserFile(data.getData(), requireContext());
-//
-//
-//                //displayImage();
-//
-//                try {
-//                    userFile.encryptOriginalFile();
-//                } catch (NoSuchAlgorithmException | IOException | IllegalBlockSizeException | InvalidKeyException | BadPaddingException | InvalidAlgorithmParameterException | NoSuchPaddingException e) {
-//                    e.printStackTrace();
-//                }
 
             }
         }
@@ -124,7 +111,7 @@ public class BreakerFragment extends Fragment {
             StringBuilder stringBuilder = new StringBuilder();
             String line;
             while((line = bufferedReader.readLine()) != null){
-                stringBuilder.append(line);
+                stringBuilder.append(line + "\n");
             }
             setCipherText(stringBuilder.toString());
             bufferedReader.close();
