@@ -9,6 +9,7 @@ import java.util.*;
 
 
 import healym3.encryptionapp2.data.Quadgram;
+import healym3.encryptionapp2.data.SubstitutionKey;
 import healym3.encryptionapp2.util.Utils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -126,6 +127,18 @@ public class Breaker {
         breakerResult = sb.toString();
         Log.d("Breaker", "breakCipher: " + breakerResult);
         //System.out.println(sb.toString());
+
+        StringBuilder keyStringBuilder = new StringBuilder();
+        for (int i: bestKey
+             ) {
+            keyStringBuilder.append(transIntToChar.get(i));
+        }
+        SubstitutionKey substitutionKey = new SubstitutionKey();
+        if(substitutionKey.setKey(keyStringBuilder.toString())){
+            Log.d("Breaker", "breakCipher: SubstitutionKey created successfully.");
+            Substitution substitution = new Substitution(substitutionKey);
+            breakerResult = substitution.decrypt(cipher);
+        }
     }
     private int hillClimb(ArrayList<Integer> key, int[] cipherBinary, ArrayList<ArrayList<Integer>> charPositions){
         int textLength = cipherBinary.length;
