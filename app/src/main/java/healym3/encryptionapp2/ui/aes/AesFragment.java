@@ -39,11 +39,9 @@ public class AesFragment extends Fragment {
 
     public static final String ALGORITHM = "AES/ECB/PKCS5Padding";
     private final int CHOOSE_BMP_FROM_DEVICE = 1000;
-    private final String algorithm = "AES/ECB/PKCS5Padding";
-    private Uri imageUriOriginal;
+
     private FragmentAesBinding binding;
-    private SecretKey key;
-    private Bitmap originalBmp;
+
     private UserFile userFile;
     private AesViewModel AESViewModel;
 
@@ -52,6 +50,7 @@ public class AesFragment extends Fragment {
         super.onResume();
         if(userFile!=null){
             displayImage();
+            displayKey();
         }
     }
 
@@ -67,22 +66,13 @@ public class AesFragment extends Fragment {
             chooseBmpFromDevice();
 
         });
-        try {
-            getKey();
-            StringBuilder sb = new StringBuilder();
-            for (byte b: key.getEncoded()
-                 ) {
-                sb.append(b + ", ");
-            }
-            binding.keyTextView2.setText(sb);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
+
         final Observer<UserFile> userFileObserver = new Observer<UserFile>() {
             @Override
             public void onChanged(@Nullable final UserFile newUserFile) {
                 userFile = newUserFile;
                 displayImage();
+                displayKey();
             }
         };
 
@@ -94,15 +84,22 @@ public class AesFragment extends Fragment {
         return root;
     }
 
+    private void displayKey() {
+        SecretKey key = userFile.getKey();
+        StringBuilder sb = new StringBuilder();
+        for (byte b: key.getEncoded()
+        ) {
+            sb.append(b + ", ");
+        }
+        binding.keyTextView2.setText(sb);
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
     }
 
-    private void getKey() throws NoSuchAlgorithmException {
-        key = AES.generateKey(128);
-    }
 
     private void chooseBmpFromDevice(){
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
@@ -139,6 +136,10 @@ public class AesFragment extends Fragment {
                 .load(userFile.getOriginalUri())
                 .fitCenter()
                 .into(binding.imageViewOriginal);
+        Glide.with(requireContext())
+                .load(userFile.getFile(userFile.getValidEncryptedBitmapFilePath()))
+                .fitCenter()
+                .into(binding.imageViewEncrypted);
     }
 
 
