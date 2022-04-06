@@ -6,17 +6,25 @@ import androidx.lifecycle.ViewModel;
 
 import java.util.Random;
 
-public class AesViewModel extends ViewModel {
+import healym3.encryptionapp2.data.UserFile;
 
-    private final MutableLiveData<String> mText;
+public class AesViewModel extends ViewModel {
+    private final MutableLiveData<UserFile> userFile;
+    //private final MutableLiveData<String> mText;
 
     public AesViewModel() {
-        mText = new MutableLiveData<>();
-        Random random = new Random();
-        mText.setValue(String.valueOf(random.nextInt(50)));
+        //mText = new MutableLiveData<>();
+        userFile = new MutableLiveData<>();
+        //Random random = new Random();
+        //mText.setValue(String.valueOf(random.nextInt(50)));
+
     }
 
-    public LiveData<String> getText() {
-        return mText;
+//    public LiveData<String> getText() {
+//        return mText;
+//    }
+
+    public MutableLiveData<UserFile> getUserFile() {
+        return userFile;
     }
 }

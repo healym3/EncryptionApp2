@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Objects;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -44,6 +45,7 @@ public class AesFragment extends Fragment {
     private SecretKey key;
     private Bitmap originalBmp;
     private UserFile userFile;
+    private AesViewModel AESViewModel;
 
     @Override
     public void onResume() {
@@ -55,7 +57,7 @@ public class AesFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        AesViewModel AESViewModel =
+        AESViewModel =
                 new ViewModelProvider(this).get(AesViewModel.class);
 
         binding = FragmentAesBinding.inflate(inflater, container, false);
@@ -76,17 +78,16 @@ public class AesFragment extends Fragment {
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
-        final Observer<String> mTextObserver = new Observer<String>() {
+        final Observer<UserFile> userFileObserver = new Observer<UserFile>() {
             @Override
-            public void onChanged(@Nullable final String newMText) {
-                // Update the UI, in this case, a TextView.
-                Log.d("mText", "onChanged: " + newMText);
-                //nameTextView.setText(newMText);
+            public void onChanged(@Nullable final UserFile newUserFile) {
+                userFile = newUserFile;
+                displayImage();
             }
         };
 
         // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
-        AESViewModel.getText().observe(getViewLifecycleOwner(), mTextObserver);
+        AESViewModel.getUserFile().observe(getViewLifecycleOwner(), userFileObserver);
 
         //final TextView textView = binding.textNotifications;
         //AESViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
@@ -117,10 +118,11 @@ public class AesFragment extends Fragment {
         if(requestCode == CHOOSE_BMP_FROM_DEVICE && resultCode == Activity.RESULT_OK){
 
             if(data != null){
-                userFile = new UserFile(data.getData(), getContext());
+                AESViewModel.getUserFile().setValue(new UserFile(data.getData(), requireContext()));
+                //userFile = new UserFile(data.getData(), requireContext());
 
 
-                displayImage();
+                //displayImage();
 
                 try {
                     userFile.encryptOriginalFile();
@@ -133,7 +135,7 @@ public class AesFragment extends Fragment {
     }
 
     private void displayImage() {
-        Glide.with(getContext())
+        Glide.with(requireContext())
                 .load(userFile.getOriginalUri())
                 .fitCenter()
                 .into(binding.imageViewOriginal);
