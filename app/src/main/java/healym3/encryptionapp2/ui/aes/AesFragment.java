@@ -86,12 +86,15 @@ public class AesFragment extends Fragment {
 
     private void displayKey() {
         SecretKey key = userFile.getKey();
-        StringBuilder sb = new StringBuilder();
-        for (byte b: key.getEncoded()
-        ) {
-            sb.append(b + ", ");
+        if(key != null){
+            StringBuilder sb = new StringBuilder();
+            for (byte b: key.getEncoded()
+            ) {
+                sb.append(b + ", ");
+            }
+            binding.keyTextView2.setText(sb);
         }
-        binding.keyTextView2.setText(sb);
+
     }
 
     @Override
