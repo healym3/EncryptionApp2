@@ -45,7 +45,9 @@ public class HomeFragment extends Fragment {
                     displayKey();
                 }
                 Utils.hideSoftKeyboard(getContext(),view);
+                binding.customKeyEditText.setText("");
             }
+
 
 
         });
