@@ -26,6 +26,8 @@ public class Substitution {
              ) {
             if(key.keyHas(ch)){
                 stringBuilder.append(key.getCipherChar(ch));
+            } else {
+                stringBuilder.append(ch);
             }
 
         }
@@ -40,7 +42,12 @@ public class Substitution {
 
         for (char ch: text.toCharArray()
              ) {
-            stringBuilder.append(key.getPlainChar(ch));
+            if(key.decryptKeyHas(ch)){
+                stringBuilder.append(key.getPlainChar(ch));
+            } else {
+                stringBuilder.append(ch);
+            }
+
         }
 
         return stringBuilder.toString();

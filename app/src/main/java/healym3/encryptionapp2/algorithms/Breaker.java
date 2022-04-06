@@ -24,7 +24,7 @@ public class Breaker {
     private Map<Character, Integer> transCharToInt;
     private Map<Integer, Character> transIntToChar;
     private int[] quadgrams;
-    //private Quadgram quadgram;
+    
     private String breakerResult;
 
     public String getBreakerResult() {
