@@ -2,10 +2,9 @@ package healym3.encryptionapp2.ui.aes;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
+
 import android.os.Bundle;
-import android.util.Log;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,27 +17,24 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 
-import java.io.File;
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Objects;
+
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
-import javax.crypto.spec.IvParameterSpec;
 
-import healym3.encryptionapp2.algorithms.AES;
+
 import healym3.encryptionapp2.data.UserFile;
 import healym3.encryptionapp2.databinding.FragmentAesBinding;
 
 public class AesFragment extends Fragment {
 
-    public static final String ALGORITHM = "AES/ECB/PKCS5Padding";
-    private final int CHOOSE_BMP_FROM_DEVICE = 1000;
+    private final int CHOOSE_BMP_FROM_DEVICE = 1010;
 
     private FragmentAesBinding binding;
 
@@ -62,10 +58,7 @@ public class AesFragment extends Fragment {
         binding = FragmentAesBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        binding.buttonLoadBitmap.setOnClickListener(view -> {
-            chooseBmpFromDevice();
-
-        });
+        binding.buttonLoadBitmap.setOnClickListener(view -> chooseBmpFromDevice());
 
         final Observer<UserFile> userFileObserver = new Observer<UserFile>() {
             @Override
@@ -79,8 +72,6 @@ public class AesFragment extends Fragment {
         // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
         AESViewModel.getUserFile().observe(getViewLifecycleOwner(), userFileObserver);
 
-        //final TextView textView = binding.textNotifications;
-        //AESViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 
@@ -90,7 +81,7 @@ public class AesFragment extends Fragment {
             StringBuilder sb = new StringBuilder();
             for (byte b: key.getEncoded()
             ) {
-                sb.append(b + ", ");
+                sb.append(b).append(", ");
             }
             binding.keyTextView2.setText(sb);
         }
@@ -119,10 +110,6 @@ public class AesFragment extends Fragment {
 
             if(data != null){
                 AESViewModel.getUserFile().setValue(new UserFile(data.getData(), requireContext()));
-                //userFile = new UserFile(data.getData(), requireContext());
-
-
-                //displayImage();
 
                 try {
                     userFile.encryptOriginalFile();

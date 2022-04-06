@@ -44,7 +44,7 @@ public class HomeFragment extends Fragment {
                 if(key.setKey(binding.customKeyEditText.getText().toString())){
                     displayKey();
                 }
-                Utils.hideSoftKeyboard(getContext(),view);
+                Utils.hideSoftKeyboard(requireContext(),view);
                 binding.customKeyEditText.setText("");
             }
 
@@ -57,7 +57,7 @@ public class HomeFragment extends Fragment {
                 substitution = new Substitution(key);
                 String cipherText = substitution.encrypt(String.valueOf(binding.plainEditText.getText()));
                 binding.cipherEditText.setText(cipherText);
-                Utils.hideSoftKeyboard(getContext(),view);
+                Utils.hideSoftKeyboard(requireContext(),view);
             }
 
         });
@@ -67,12 +67,10 @@ public class HomeFragment extends Fragment {
                 substitution = new Substitution(key);
                 String plainText = substitution.decrypt(String.valueOf(binding.cipherEditText.getText()));
                 binding.plainEditText.setText(plainText);
-                Utils.hideSoftKeyboard(getContext(),view);
+                Utils.hideSoftKeyboard(requireContext(),view);
             }
         });
 
-        //final TextView textView = binding.textHome;
-        //homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 
