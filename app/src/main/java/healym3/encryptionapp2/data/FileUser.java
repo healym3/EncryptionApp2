@@ -28,11 +28,13 @@ import javax.crypto.spec.IvParameterSpec;
 
 import healym3.encryptionapp2.algorithms.AES;
 
-public class UserFile {
+public class FileUser {
     public static final String ALGORITHM = "AES/ECB/PKCS5Padding";
     public static final int DEFAULT_BUFFER_SIZE = 8192;
     public static final int BITMAP_HEADER_SIZE = 54;
-    private Context context;
+    private Uri originalUri = null;
+    private Uri encryptedUri = null;
+    private final Context context;
     private FILE_TYPE file_type;
     private String originalFileName;
     private String encryptedFileName;
@@ -43,14 +45,6 @@ public class UserFile {
     private byte[] header;
     private SecretKey key;
     private IvParameterSpec iv;
-
-    public String getOriginalFileName() {
-        return originalFileName;
-    }
-
-    public String getEncryptedFileName() {
-        return encryptedFileName;
-    }
 
     public IvParameterSpec getIv() {
         return iv;
@@ -76,51 +70,45 @@ public class UserFile {
         return validEncryptedBitmapFile;
     }
 
-    public UserFile(FILE_TYPE file_type, Uri uri, Context context){
+    public FileUser(FILE_TYPE file_type, Uri uri, Context context) throws FileNotFoundException {
         this.context = context;
         this.file_type = file_type;
         this.appFilesDir = context.getFilesDir();
-        InputStream inputStream = null;
-        try {
-            inputStream = context.getContentResolver().openInputStream(uri);
-            switch(file_type){
-                case ORIGINAL:
-                    this.originalFileName = getFileNameFromUri(uri);
-                    setEncryptedFileNameFromOriginal(this.originalFileName);
-                    originalFile = new File(appFilesDir.getPath() + "/" + originalFileName );
-                    try {
-                        copyInputStreamToFile(inputStream,originalFile);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    if(this.originalFileName.contains(".bmp")){
-                        setHeader();
-                    }
+        InputStream inputStream = context.getContentResolver().openInputStream(uri);
+        switch(file_type){
+            case ORIGINAL:
+                this.originalFileName = getFileNameFromUri(uri);
+                setEncryptedFileNameFromOriginal(this.originalFileName);
+                originalFile = new File(appFilesDir.getPath() + "/" + originalFileName );
+                try {
+                    copyInputStreamToFile(inputStream,originalFile);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if(this.originalFileName.contains(".bmp")){
+                    setHeader();
+                }
 
 
-                    break;
+                break;
 
-                case ENCRYPTED:
-                    this.encryptedFileName = getFileNameFromUri(uri);
-                    setOriginalFileNameFromEncrypted(this.encryptedFileName);
-                    encryptedFile = new File(appFilesDir.getPath() + "/" + encryptedFileName);
-                    try {
-                        copyInputStreamToFile(inputStream,encryptedFile);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+            case ENCRYPTED:
+                this.encryptedFileName = getFileNameFromUri(uri);
+                setOriginalFileNameFromEncrypted(this.encryptedFileName);
+                encryptedFile = new File(appFilesDir.getPath() + "/" + encryptedFileName);
+                try {
+                    copyInputStreamToFile(inputStream,encryptedFile);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
-                    break;
+                break;
 
-                default:
+            default:
 
-                    break;
+                break;
 
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         }
-
 
     }
 

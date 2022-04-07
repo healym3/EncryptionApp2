@@ -29,6 +29,7 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 
 
+import healym3.encryptionapp2.data.FILE_TYPE;
 import healym3.encryptionapp2.data.UserFile;
 import healym3.encryptionapp2.databinding.FragmentAesBinding;
 
@@ -109,7 +110,7 @@ public class AesFragment extends Fragment {
         if(requestCode == CHOOSE_BMP_FROM_DEVICE && resultCode == Activity.RESULT_OK){
 
             if(data != null){
-                AESViewModel.getUserFile().setValue(new UserFile(data.getData(), requireContext()));
+                AESViewModel.getUserFile().setValue(new UserFile(FILE_TYPE.ORIGINAL, data.getData(), requireContext()));
 
                 try {
                     userFile.encryptOriginalFile();
@@ -123,11 +124,11 @@ public class AesFragment extends Fragment {
 
     private void displayImage() {
         Glide.with(requireContext())
-                .load(userFile.getOriginalUri())
+                .load(userFile.getOriginalFile())
                 .fitCenter()
                 .into(binding.imageViewOriginal);
         Glide.with(requireContext())
-                .load(userFile.getFile(userFile.getValidEncryptedBitmapFilePath()))
+                .load(userFile.getValidEncryptedBitmapFile())
                 .fitCenter()
                 .into(binding.imageViewEncrypted);
     }

@@ -30,6 +30,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 
+import healym3.encryptionapp2.data.FILE_TYPE;
 import healym3.encryptionapp2.data.UserFile;
 import healym3.encryptionapp2.databinding.FileEncryptionFragmentBinding;
 
@@ -142,7 +143,7 @@ public class FileEncryptionFragment extends Fragment {
 
     private void displayFileName(){
         if(userFile!=null){
-            binding.fileNameTextView.setText(userFile.getFileName());
+            binding.fileNameTextView.setText(userFile.getOriginalFileName());
         }
     }
 
@@ -202,7 +203,7 @@ public class FileEncryptionFragment extends Fragment {
 
             if(data != null){
                 //userFile = ;
-                fileEncryptionViewModel.getUserFile().setValue(new UserFile(data.getData(),requireContext()));
+                fileEncryptionViewModel.getUserFile().setValue(new UserFile(FILE_TYPE.ORIGINAL, data.getData(),requireContext()));
                 Log.d("TAG", "onActivityResult: " + userFile.toString());
 //                try {
 //                    userFile.encryptOriginalFile();
