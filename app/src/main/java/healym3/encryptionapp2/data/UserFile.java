@@ -40,16 +40,21 @@ public class UserFile {
     private final Uri originalUri;
     private Path appStoragePath;
     private Path encryptedFilePath;
+    private String encryptedFileName;
     private Path validEncryptedBitmapFilePath;
-    private String filename;
+    private String fileName;
     private final Context context;
     private String extension;
     private byte[] header;
     private SecretKey key;
     private IvParameterSpec iv;
 
-    public String getFilename() {
-        return filename;
+    public Path getEncryptedFilePath() {
+        return encryptedFilePath;
+    }
+
+    public String getFileName() {
+        return fileName;
     }
 
     public UserFile(Uri originalUri, Context context) {
@@ -59,7 +64,7 @@ public class UserFile {
         setExtension();
         try {
             InputStream inputStream = context.getContentResolver().openInputStream(originalUri);
-            appStoragePath = Paths.get(context.getFilesDir().getPath() + "/" + filename);
+            appStoragePath = Paths.get(context.getFilesDir().getPath() + "/" + fileName);
 
             File originalFile = new File(String.valueOf(appStoragePath));
 
@@ -99,9 +104,9 @@ public class UserFile {
     }
 
     private void setExtension(){
-        int cut = filename.lastIndexOf('.');
+        int cut = fileName.lastIndexOf('.');
         if(cut!=-1){
-            this.extension = filename.substring(cut+1).toLowerCase(Locale.ROOT);
+            this.extension = fileName.substring(cut+1).toLowerCase(Locale.ROOT);
         }
     }
 
@@ -125,8 +130,9 @@ public class UserFile {
                 result = result.substring(cut + 1);
             }
         }
-        this.filename = result;
+        this.fileName = result;
     }
+
     private static void copyInputStreamToFile(InputStream inputStream, File file)
             throws IOException {
 
@@ -175,6 +181,8 @@ public class UserFile {
         File encryptedFile = new File(String.valueOf(encryptedFilePath));
         AES.encryptFile(ALGORITHM, key, iv, originalFile, encryptedFile);
         if(this.extension.contains("bmp")) createValidBitmapFromEncrypted();
+
+        this.encryptedFileName = encryptedFile.getName();
     }
 
     public IvParameterSpec getIv() {
@@ -212,13 +220,17 @@ public class UserFile {
                 "originalUri=" + originalUri +
                 ", appStoragePath=" + appStoragePath +
                 ", encryptedFilePath=" + encryptedFilePath +
-                ", filename='" + filename + '\'' +
+                ", filename='" + fileName + '\'' +
                 ", context=" + context +
                 '}';
     }
 
     public SecretKey getKey() {
         return key;
+    }
+
+    public String getEncryptedFileName() {
+        return encryptedFileName;
     }
 
     public void setKey(SecretKey key) {

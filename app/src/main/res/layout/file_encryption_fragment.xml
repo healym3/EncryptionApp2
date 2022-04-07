@@ -82,4 +82,24 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/generateKeyButton"
         app:layout_constraintStart_toEndOf="@id/importKeyButton"/>
+
+    <Button
+        android:id="@+id/encryptFileButton"
+        style="@style/buttonStyle3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/encryptButtonText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/keyTextViewFileEncryption" />
+
+    <Button
+        android:id="@+id/emailFileButton"
+        style="@style/buttonStyle3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/email_file"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/encryptFileButton" />
 </androidx.constraintlayout.widget.ConstraintLayout>

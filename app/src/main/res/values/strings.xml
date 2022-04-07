@@ -26,4 +26,5 @@
     <string name="fileNamePlaceholder">No file open.</string>
     <string name="importKey">Import Key</string>
     <string name="title_file_encryption">Files</string>
+    <string name="email_file">Email File</string>
 </resources>

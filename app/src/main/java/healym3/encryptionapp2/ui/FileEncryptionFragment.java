@@ -1,10 +1,12 @@
 package healym3.encryptionapp2.ui;
 
+import androidx.core.content.FileProvider;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,7 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.io.FileNotFoundException;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
@@ -78,14 +80,69 @@ public class FileEncryptionFragment extends Fragment {
             saveKeyToFile();
         });
 
+        binding.encryptFileButton.setOnClickListener(view -> encryptFile());
+
+        binding.emailFileButton.setOnClickListener(view -> composeEmail());
+
         fileEncryptionViewModel.getUserFile().observe(getViewLifecycleOwner(), userFileObserver);
+
 
         return root;
 
     }
+
+
+    public void composeEmail() {
+        File encryptedFilesDirectory = new File(String.valueOf(requireContext().getFilesDir()));
+        File encryptedFile = new File(encryptedFilesDirectory, userFile.getEncryptedFileName());
+        Uri attachment = FileProvider.getUriForFile(requireContext(), "healym3.fileprovider", encryptedFile);
+        Intent intent = createEmailIntent(attachment);
+
+        Log.d("email", "composeEmail: " + encryptedFile.getPath() + " " + encryptedFile.toURI().toString());
+        startActivity(intent);
+//        Intent intent = new Intent(Intent.ACTION_SEND);
+//        intent.setType("*/*");
+//        //intent.putExtra(Intent.EXTRA_EMAIL, addresses);
+//        intent.putExtra(Intent.EXTRA_SUBJECT, "Test");
+//        File attachmentFile = new File(String.valueOf(userFile.getEncryptedFilePath()));
+//        if(attachmentFile.exists() && attachmentFile.canRead()){
+//            Uri attachment = Uri.fromFile(attachmentFile);
+//            intent.putExtra(Intent.EXTRA_STREAM, attachment);
+//            startActivity(Intent.createChooser(intent, "Pick an email provider"));
+//        }
+//
+////        if (intent.resolveActivity(getPackageManager()) != null) {
+////            startActivity(intent);
+////        }
+    }
+
+    private Intent createEmailIntent(Uri uri){
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("vnd.android.cursor.dir/email");
+        String[] addresses = new String[1];
+        addresses[0]= "some@email.com";
+        intent.putExtra(Intent.EXTRA_EMAIL, addresses);
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Test");
+        intent.putExtra(Intent.EXTRA_STREAM, uri);
+
+        return intent;
+    }
+
+    private void encryptFile() {
+        if (userFile != null){
+            if(userFile.getKey() != null){
+                try {
+                    userFile.encryptOriginalFile();
+                } catch (NoSuchAlgorithmException | IOException | IllegalBlockSizeException | InvalidKeyException | BadPaddingException | InvalidAlgorithmParameterException | NoSuchPaddingException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
     private void displayFileName(){
         if(userFile!=null){
-            binding.fileNameTextView.setText(userFile.getFilename());
+            binding.fileNameTextView.setText(userFile.getFileName());
         }
     }
 
