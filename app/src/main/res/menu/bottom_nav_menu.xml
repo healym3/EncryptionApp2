@@ -3,7 +3,7 @@
 
     <item
         android:id="@+id/navigation_home"
-        android:icon="@drawable/ic_home_black_24dp"
+        android:icon="@drawable/ic_home_lock"
         android:title="@string/title_home" />
 
     <item
@@ -13,12 +13,12 @@
 
     <item
         android:id="@+id/navigation_aes"
-        android:icon="@drawable/ic_notifications_black_24dp"
+        android:icon="@drawable/ic_aes_image"
         android:title="@string/title_aes" />
 
     <item
         android:id="@+id/navigation_file_encryption"
-        android:icon="@drawable/ic_notifications_black_24dp"
+        android:icon="@drawable/ic_file_encryption_mail"
         android:title="@string/title_file_encryption" />
 
 </menu>
