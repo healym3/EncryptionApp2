@@ -24,12 +24,10 @@ import javax.crypto.spec.IvParameterSpec;
 
 import healym3.encryptionapp2.algorithms.AES;
 
-public class UserFile {
+public class UserFileBitmap {
     public static final String ALGORITHM = "AES/ECB/PKCS5Padding";
     public static final int DEFAULT_BUFFER_SIZE = 8192;
     public static final int BITMAP_HEADER_SIZE = 54;
-    public static ALGORITHM_CHOICE DEFAULT_ALGORITHM = ALGORITHM_CHOICE.AES_CBC_PADDING;
-    private Algorithm algorithm;
     private Context context;
     private FILE_TYPE file_type;
     private String originalFileName;
@@ -58,10 +56,6 @@ public class UserFile {
         this.iv = iv;
     }
 
-    public void generateIv(){
-        this.iv = AES.generateIv();
-    }
-
     public SecretKey getKey() {
         return key;
     }
@@ -82,15 +76,10 @@ public class UserFile {
         return validEncryptedBitmapFile;
     }
 
-    public void setAlgorithm(ALGORITHM_CHOICE algorithmChoice){
-        algorithm.setAlgorithmChoice(algorithmChoice);
-    }
-
-    public UserFile(FILE_TYPE file_type, Uri uri, Context context){
+    public UserFileBitmap(FILE_TYPE file_type, Uri uri, Context context){
         this.context = context;
         this.file_type = file_type;
         this.appFilesDir = context.getFilesDir();
-        this.algorithm = new Algorithm(DEFAULT_ALGORITHM);
         InputStream inputStream = null;
         try {
             inputStream = context.getContentResolver().openInputStream(uri);
@@ -174,10 +163,10 @@ public class UserFile {
     }
 
     private void setEncryptedFileNameFromOriginal(String original){
-        this.encryptedFileName = original + algorithm.getEncryptedFileExtension();
+        this.encryptedFileName = original + ".encrypted";
     }
     private void setOriginalFileNameFromEncrypted(String encrypted){
-        int cut = encrypted.lastIndexOf(".aes");
+        int cut = encrypted.lastIndexOf(".encrypted");
         this.originalFileName = encrypted.substring(0, cut);
     }
 
@@ -207,7 +196,7 @@ public class UserFile {
         }
         iv = AES.generateIv();
 
-        AES.encryptFile(algorithm.getAlgorithm(), key, iv, originalFile, encryptedFile);
+        AES.encryptFile(ALGORITHM, key, iv, originalFile, encryptedFile);
         if(this.originalFileName.contains(".bmp")) createValidBitmapFromEncrypted();
 
     }
