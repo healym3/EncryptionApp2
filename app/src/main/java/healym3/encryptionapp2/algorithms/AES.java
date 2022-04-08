@@ -1,5 +1,7 @@
 package healym3.encryptionapp2.algorithms;
 
+import android.util.Log;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -19,6 +21,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 
 public class AES {
+    public static final String TAG = "AES";
 
     public static SecretKey generateKey(int n) throws NoSuchAlgorithmException {
         KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
@@ -64,6 +67,7 @@ public class AES {
         Cipher cipher = Cipher.getInstance(algorithm);
         if(algorithm.contains("ECB")){
             cipher.init(Cipher.ENCRYPT_MODE, key);
+            Log.d(TAG, "encryptFile: " + cipher.getAlgorithm() + " - " + cipher.toString());
         }
         else{
             cipher.init(Cipher.ENCRYPT_MODE, key, iv);
@@ -75,17 +79,20 @@ public class AES {
         int bytesRead;
         while ((bytesRead = inputStream.read(buffer)) != -1) {
             byte[] output = cipher.update(buffer, 0, bytesRead);
+
             if (output != null) {
                 outputStream.write(output);
             }
+            //Log.d(TAG, "encryptFile: " + cipher.getAlgorithm() + " available:" + inputStream.available());
         }
+
         byte[] outputBytes = cipher.doFinal();
         if (outputBytes != null) {
             outputStream.write(outputBytes);
         }
         inputStream.close();
         outputStream.close();
-
+        //Log.d(TAG, "encryptFile: " + cipher.getAlgorithm() + " - " + cipher.toString());
     }
 
 

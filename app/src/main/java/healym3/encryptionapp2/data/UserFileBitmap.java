@@ -71,7 +71,7 @@ public class UserFileBitmap extends UserFile{
 
                 break;
         }
-        Log.d(TAG, "setEncryptedFileNameFromOriginal: " + mode + this.algorithm.getAlgorithm());
+        //Log.d(TAG, "setEncryptedFileNameFromOriginal: " + mode + this.algorithm.getAlgorithm());
     }
 
     private void setAlgorithm(ALGORITHM_CHOICE algorithmChoice, MODE mode){
