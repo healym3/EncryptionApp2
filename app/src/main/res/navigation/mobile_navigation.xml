@@ -56,7 +56,7 @@
     </fragment>
     <fragment
         android:id="@+id/navigation_file_encryption"
-        android:name="healym3.encryptionapp2.ui.FileEncryptionFragment"
+        android:name="healym3.encryptionapp2.ui.files.FileEncryptionFragment"
         android:label="@string/title_file_encryption"
         tools:layout="@layout/file_encryption_fragment" />
 </navigation>

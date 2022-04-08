@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.FileEncryptionFragment">
+    tools:context=".ui.files.FileEncryptionFragment">
 
     <TextView
         android:id="@+id/keyTextViewFileEncryption"
@@ -32,9 +32,10 @@
         style="@style/buttonStyle3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:text="@string/open_file"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        tools:layout_editor_absoluteY="72dp" />
 
     <TextView
         android:id="@+id/fileNameTextView"
@@ -54,9 +55,11 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="8dp"
         android:text="@string/createKeyButton"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/importKeyButton"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/openFileButton" />
+
 
     <Button
         android:id="@+id/importKeyButton"
@@ -64,13 +67,11 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="8dp"
-        android:layout_marginTop="23dp"
         android:text="@string/importKey"
         app:layout_constraintEnd_toStartOf="@+id/saveKeyAESButton"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/generateKeyButton" />
-
-
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/generateKeyButton"
+        tools:layout_editor_absoluteY="64dp" />
 
     <Button
         android:id="@+id/saveKeyAESButton"
@@ -80,16 +81,20 @@
         android:layout_marginHorizontal="8dp"
         android:text="@string/saveKeyButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/generateKeyButton"
-        app:layout_constraintStart_toEndOf="@id/importKeyButton"/>
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/importKeyButton"
+        tools:layout_editor_absoluteY="64dp" />
 
     <Button
         android:id="@+id/encryptFileButton"
         style="@style/buttonStyle3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:backgroundTint="@color/secondaryDarkColor"
         android:text="@string/encryptButtonText"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/emailFileButton"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/keyTextViewFileEncryption" />
 
@@ -98,8 +103,18 @@
         style="@style/buttonStyle3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/primaryDarkColor"
         android:text="@string/email_file"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/encryptFileButton" />
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/encryptFileButton"
+        tools:layout_editor_absoluteY="173dp" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        tools:layout_editor_absoluteX="122dp"
+        tools:layout_editor_absoluteY="25dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

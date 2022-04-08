@@ -1,4 +1,4 @@
-package healym3.encryptionapp2.ui;
+package healym3.encryptionapp2.ui.files;
 
 import androidx.core.content.FileProvider;
 import androidx.lifecycle.Observer;
@@ -18,7 +18,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
@@ -38,7 +37,8 @@ public class FileEncryptionFragment extends Fragment {
     private final int CHOOSE_FILE_FROM_DEVICE = 1020;
     private FileEncryptionViewModel fileEncryptionViewModel;
     private FileEncryptionFragmentBinding binding;
-    private UserFile userFile;
+    private UserFile originalFile;
+    private UserFile encryptedFile;
 
 //    public static FileEncryptionFragment newInstance() {
 //        return new FileEncryptionFragment();
@@ -51,23 +51,36 @@ public class FileEncryptionFragment extends Fragment {
         binding = FileEncryptionFragmentBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final Observer<UserFile> userFileObserver = new Observer<UserFile>() {
+        final Observer<UserFile> originalFileObserver = new Observer<UserFile>() {
             @Override
-            public void onChanged(@Nullable final UserFile newUserFile) {
-                userFile = newUserFile;
+            public void onChanged(@Nullable final UserFile newOriginalFile) {
+                originalFile = newOriginalFile;
                 displayFileName();
                 displayKey();
             }
         };
+
+        fileEncryptionViewModel.getOriginalFile().observe(getViewLifecycleOwner(), originalFileObserver);
+
+        final Observer<UserFile> encryptedFileObserver = new Observer<UserFile>() {
+            @Override
+            public void onChanged(@Nullable final UserFile newEncryptedFile) {
+                encryptedFile = newEncryptedFile;
+                displayFileName();
+                displayKey();
+            }
+        };
+
+        fileEncryptionViewModel.getOriginalFile().observe(getViewLifecycleOwner(), encryptedFileObserver);
 
         binding.openFileButton.setOnClickListener(view -> {
             chooseFileFromDevice();
         });
 
         binding.generateKeyButton.setOnClickListener(view -> {
-            if(userFile!=null){
+            if(originalFile !=null){
                 try {
-                    userFile.generateKey();
+                    originalFile.generateKey();
                     updateUserKeyViewModel();
                     displayKey();
                 } catch (NoSuchAlgorithmException e) {
@@ -85,7 +98,7 @@ public class FileEncryptionFragment extends Fragment {
 
         binding.emailFileButton.setOnClickListener(view -> composeEmail());
 
-        fileEncryptionViewModel.getUserFile().observe(getViewLifecycleOwner(), userFileObserver);
+
 
 
         return root;
@@ -94,7 +107,7 @@ public class FileEncryptionFragment extends Fragment {
 
 
     public void composeEmail() {
-        Uri attachment = FileProvider.getUriForFile(requireContext(), "healym3.fileprovider", userFile.getEncryptedFile());
+        Uri attachment = FileProvider.getUriForFile(requireContext(), "healym3.fileprovider", originalFile.getEncryptedFile());
         Intent intent = createEmailIntent(attachment);
         startActivity(intent);
 
@@ -111,10 +124,10 @@ public class FileEncryptionFragment extends Fragment {
     }
 
     private void encryptFile() {
-        if (userFile != null){
-            if(userFile.getKey() != null){
+        if (originalFile != null){
+            if(originalFile.getKey() != null){
                 try {
-                    userFile.encryptOriginalFile();
+                    originalFile.encryptOriginalFile();
                 } catch (NoSuchAlgorithmException | IOException | IllegalBlockSizeException | InvalidKeyException | BadPaddingException | InvalidAlgorithmParameterException | NoSuchPaddingException e) {
                     e.printStackTrace();
                 }
@@ -123,14 +136,14 @@ public class FileEncryptionFragment extends Fragment {
     }
 
     private void displayFileName(){
-        if(userFile!=null){
-            binding.fileNameTextView.setText(userFile.getOriginalFileName());
+        if(originalFile !=null){
+            binding.fileNameTextView.setText(originalFile.getOriginalFileName());
         }
     }
 
     private void displayKey() {
-        if(userFile!=null){
-            SecretKey key = userFile.getKey();
+        if(originalFile !=null){
+            SecretKey key = originalFile.getKey();
             if(key != null){
                 StringBuilder sb = new StringBuilder();
                 for (byte b: key.getEncoded()
@@ -146,8 +159,8 @@ public class FileEncryptionFragment extends Fragment {
 
     private void saveKeyToFile(){
 
-        if(userFile!=null){
-            SecretKey key = userFile.getKey();
+        if(originalFile !=null){
+            SecretKey key = originalFile.getKey();
             if(key!=null){
                 FileOutputStream fileOutputStream = null;
                 try {
@@ -166,7 +179,7 @@ public class FileEncryptionFragment extends Fragment {
     }
 
     private void updateUserKeyViewModel(){
-        fileEncryptionViewModel.getUserFile().setValue(userFile);
+        fileEncryptionViewModel.getOriginalFile().setValue(originalFile);
     }
 
     private void chooseFileFromDevice(){
@@ -184,8 +197,8 @@ public class FileEncryptionFragment extends Fragment {
 
             if(data != null){
                 //userFile = ;
-                fileEncryptionViewModel.getUserFile().setValue(new UserFile(FILE_TYPE.ORIGINAL, data.getData(),requireContext()));
-                Log.d("TAG", "onActivityResult: " + userFile.toString());
+                fileEncryptionViewModel.getOriginalFile().setValue(new UserFile(FILE_TYPE.ORIGINAL, data.getData(),requireContext()));
+                Log.d("TAG", "onActivityResult: " + originalFile.toString());
 //                try {
 //                    userFile.encryptOriginalFile();
 //                } catch (NoSuchAlgorithmException | IOException | IllegalBlockSizeException | InvalidKeyException | BadPaddingException | InvalidAlgorithmParameterException | NoSuchPaddingException e) {
@@ -201,7 +214,7 @@ public class FileEncryptionFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if(userFile!=null){
+        if(originalFile !=null){
             displayFileName();
         }
     }
