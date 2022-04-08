@@ -2,6 +2,7 @@ package healym3.encryptionapp2.data;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,6 +21,7 @@ import healym3.encryptionapp2.algorithms.AES;
 
 public class UserFileBitmap extends UserFile{
     public static final int BITMAP_HEADER_SIZE = 54;
+    public static final String TAG = "UserFileBitmap";
     private File validCbcEncryptedBitmap;
     private File validEcbEncryptedBitmap;
     private File encryptedEcbFile;
@@ -57,18 +59,19 @@ public class UserFileBitmap extends UserFile{
     private void setEncryptedFileNameFromOriginal(String original, MODE mode){
         switch(mode){
             case ECB:
-                this.encryptedEcbFilename = original + algorithm.getEncryptedFileExtension();
+                this.encryptedEcbFilename = original + ".ecb";
+
                 break;
 
             case CBC:
-                this.encryptedCBCFileName = original + algorithm.getEncryptedFileExtension();
+                this.encryptedCBCFileName = original + ".cbc";
                 break;
 
             default:
 
                 break;
         }
-
+        Log.d(TAG, "setEncryptedFileNameFromOriginal: " + mode + this.algorithm.getAlgorithm());
     }
 
     private void setAlgorithm(ALGORITHM_CHOICE algorithmChoice, MODE mode){
@@ -82,11 +85,11 @@ public class UserFileBitmap extends UserFile{
             generateKey();
         }
         iv = AES.generateIv();
-
+        this.setAlgorithm(ALGORITHM_CHOICE.AES_CBC_PADDING, MODE.CBC);
         encryptedCBCFile = new File(this.appFilesDir + "/" + this.encryptedCBCFileName);
         AES.encryptFile(algorithm.getAlgorithm(), key, iv, originalFile, encryptedCBCFile);
 
-        this.setAlgorithm(ALGORITHM_CHOICE.AES_ECB_NO_PADDING, MODE.ECB);
+        this.setAlgorithm(ALGORITHM_CHOICE.AES_ECB_PADDING, MODE.ECB);
         encryptedEcbFile = new File(this.appFilesDir + "/" + this.encryptedEcbFilename);
         AES.encryptFile(algorithm.getAlgorithm(), key, iv, originalFile, encryptedEcbFile);
 
