@@ -29,8 +29,7 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 
 
-import healym3.encryptionapp2.data.FILE_TYPE;
-import healym3.encryptionapp2.data.UserFile;
+import healym3.encryptionapp2.data.UserFileBitmap;
 import healym3.encryptionapp2.databinding.FragmentAesBinding;
 
 public class AesFragment extends Fragment {
@@ -39,7 +38,7 @@ public class AesFragment extends Fragment {
 
     private FragmentAesBinding binding;
 
-    private UserFile userFile;
+    private UserFileBitmap userFile;
     private AesViewModel AESViewModel;
 
     @Override
@@ -61,9 +60,9 @@ public class AesFragment extends Fragment {
 
         binding.buttonLoadBitmap.setOnClickListener(view -> chooseBmpFromDevice());
 
-        final Observer<UserFile> userFileObserver = new Observer<UserFile>() {
+        final Observer<UserFileBitmap> userFileObserver = new Observer<UserFileBitmap>() {
             @Override
-            public void onChanged(@Nullable final UserFile newUserFile) {
+            public void onChanged(@Nullable final UserFileBitmap newUserFile) {
                 userFile = newUserFile;
                 displayImage();
                 displayKey();
@@ -110,7 +109,7 @@ public class AesFragment extends Fragment {
         if(requestCode == CHOOSE_BMP_FROM_DEVICE && resultCode == Activity.RESULT_OK){
 
             if(data != null){
-                AESViewModel.getUserFile().setValue(new UserFile(FILE_TYPE.ORIGINAL, data.getData(), requireContext()));
+                AESViewModel.getUserFile().setValue(new UserFileBitmap(data.getData(), requireContext()));
 
                 try {
                     userFile.encryptOriginalFile();
@@ -128,9 +127,13 @@ public class AesFragment extends Fragment {
                 .fitCenter()
                 .into(binding.imageViewOriginal);
         Glide.with(requireContext())
-                .load(userFile.getValidEncryptedBitmapFile())
+                .load(userFile.getValidEcbEncryptedBitmap())
                 .fitCenter()
-                .into(binding.imageViewEncrypted);
+                .into(binding.imageViewEncryptedEcb);
+        Glide.with(requireContext())
+                .load(userFile.getValidCbcEncryptedBitmap())
+                .fitCenter()
+                .into(binding.imageViewEncryptedCBC);
     }
 
 

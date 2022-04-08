@@ -27,20 +27,20 @@ import healym3.encryptionapp2.algorithms.AES;
 public class UserFile {
     public static final String ALGORITHM = "AES/ECB/PKCS5Padding";
     public static final int DEFAULT_BUFFER_SIZE = 8192;
-    public static final int BITMAP_HEADER_SIZE = 54;
+
     public static ALGORITHM_CHOICE DEFAULT_ALGORITHM = ALGORITHM_CHOICE.AES_CBC_PADDING;
-    private Algorithm algorithm;
-    private Context context;
+    protected Algorithm algorithm;
+    protected Context context;
     private FILE_TYPE file_type;
-    private String originalFileName;
+    protected String originalFileName;
     private String encryptedFileName;
-    private File originalFile;
+
     private File encryptedFile;
-    private File appFilesDir;
-    private File validEncryptedBitmapFile;
-    private byte[] header;
-    private SecretKey key;
-    private IvParameterSpec iv;
+    protected File appFilesDir;
+    protected File originalFile;
+
+    protected SecretKey key;
+    protected IvParameterSpec iv;
 
     public String getOriginalFileName() {
         return originalFileName;
@@ -78,12 +78,11 @@ public class UserFile {
         return encryptedFile;
     }
 
-    public File getValidEncryptedBitmapFile() {
-        return validEncryptedBitmapFile;
-    }
+
 
     public void setAlgorithm(ALGORITHM_CHOICE algorithmChoice){
         algorithm.setAlgorithmChoice(algorithmChoice);
+        setEncryptedFileNameFromOriginal(originalFileName);
     }
 
     public UserFile(FILE_TYPE file_type, Uri uri, Context context){
@@ -103,9 +102,6 @@ public class UserFile {
                         copyInputStreamToFile(inputStream,originalFile);
                     } catch (IOException e) {
                         e.printStackTrace();
-                    }
-                    if(this.originalFileName.contains(".bmp")){
-                        setHeader();
                     }
 
 
@@ -181,17 +177,7 @@ public class UserFile {
         this.originalFileName = encrypted.substring(0, cut);
     }
 
-    private void setHeader(){
 
-        try {
-            InputStream inputStream = new FileInputStream(originalFile);
-            header = new byte[BITMAP_HEADER_SIZE];
-            int bytesRead = inputStream.read(header);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
     public void generateKey() throws NoSuchAlgorithmException {
         key = AES.generateKey(128);
     }
@@ -208,31 +194,9 @@ public class UserFile {
         iv = AES.generateIv();
 
         AES.encryptFile(algorithm.getAlgorithm(), key, iv, originalFile, encryptedFile);
-        if(this.originalFileName.contains(".bmp")) createValidBitmapFromEncrypted();
+
 
     }
 
-    private void createValidBitmapFromEncrypted(){
 
-        if(header!=null && originalFileName.contains(".bmp")){
-            this.validEncryptedBitmapFile = new File(encryptedFile.getPath() + ".bmp");
-
-            try {
-                FileInputStream inputStream = new FileInputStream(encryptedFile);
-                FileOutputStream outputStream = new FileOutputStream(validEncryptedBitmapFile, false);
-                outputStream.write(header);
-                //noinspection ResultOfMethodCallIgnored
-                inputStream.skip(BITMAP_HEADER_SIZE);
-                int read;
-                byte[] bytes = new byte[DEFAULT_BUFFER_SIZE];
-                while ((read = inputStream.read(bytes)) != -1) {
-                    outputStream.write(bytes, 0, read);
-                }
-                inputStream.close();
-                outputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 }

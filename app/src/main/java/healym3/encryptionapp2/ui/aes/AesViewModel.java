@@ -7,9 +7,10 @@ import androidx.lifecycle.ViewModel;
 import java.util.Random;
 
 import healym3.encryptionapp2.data.UserFile;
+import healym3.encryptionapp2.data.UserFileBitmap;
 
 public class AesViewModel extends ViewModel {
-    private final MutableLiveData<UserFile> userFile;
+    private final MutableLiveData<UserFileBitmap> userFile;
     //private final MutableLiveData<String> mText;
 
     public AesViewModel() {
@@ -24,7 +25,7 @@ public class AesViewModel extends ViewModel {
 //        return mText;
 //    }
 
-    public MutableLiveData<UserFile> getUserFile() {
+    public MutableLiveData<UserFileBitmap> getUserFile() {
         return userFile;
     }
 }
