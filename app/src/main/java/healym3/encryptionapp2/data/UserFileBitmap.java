@@ -2,7 +2,6 @@ package healym3.encryptionapp2.data;
 
 import android.content.Context;
 import android.net.Uri;
-import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -86,11 +85,11 @@ public class UserFileBitmap extends UserFile{
         }
         iv = AES.generateIv();
         this.setAlgorithm(ALGORITHM_CHOICE.AES_CBC_PADDING, MODE.CBC);
-        encryptedCBCFile = new File(this.appFilesDir + "/" + this.encryptedCBCFileName);
+        encryptedCBCFile = new File(this.filesDir + "/" + this.encryptedCBCFileName);
         AES.encryptFile(algorithm.getAlgorithm(), key, iv, originalFile, encryptedCBCFile);
 
         this.setAlgorithm(ALGORITHM_CHOICE.AES_ECB_PADDING, MODE.ECB);
-        encryptedEcbFile = new File(this.appFilesDir + "/" + this.encryptedEcbFilename);
+        encryptedEcbFile = new File(this.filesDir + "/" + this.encryptedEcbFilename);
         AES.encryptFile(algorithm.getAlgorithm(), key, iv, originalFile, encryptedEcbFile);
 
         createValidBitmapFromEncrypted();

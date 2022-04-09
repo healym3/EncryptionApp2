@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.provider.OpenableColumns;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -29,20 +28,125 @@ public class UserFile {
     public static final int DEFAULT_BUFFER_SIZE = 8192;
 
     public static ALGORITHM_CHOICE DEFAULT_ALGORITHM = ALGORITHM_CHOICE.AES_CBC_PADDING;
+    private final FILE_TYPE file_type;
     protected Algorithm algorithm;
     protected Context context;
-    private FILE_TYPE file_type;
     protected String originalFileName;
-    private String encryptedFileName;
-    private String ivFileName;
-
-    private File encryptedFile;
-    protected File appFilesDir;
+    protected File filesDir;
     protected File originalFile;
-    private File ivFile;
-
     protected SecretKey key;
     protected IvParameterSpec iv;
+    private String encryptedFileName;
+    private String ivFileName;
+    private File encryptedFile;
+    private File ivFile;
+
+//    public void setFilesDir(File filesDir) {
+//        this.filesDir = filesDir;
+//    }
+
+    public UserFile(FILE_TYPE file_type, Uri uri, Context context) {
+        this.context = context;
+        this.file_type = file_type;
+        this.filesDir = context.getFilesDir();
+        this.algorithm = new Algorithm(DEFAULT_ALGORITHM);
+
+        init(file_type, uri, context);
+    }
+
+    public UserFile(FILE_TYPE file_type, Uri uri, Context context, File filesDir) {
+        this.context = context;
+        this.file_type = file_type;
+        this.filesDir = filesDir;
+        this.algorithm = new Algorithm(DEFAULT_ALGORITHM);
+
+        init(file_type, uri, context);
+    }
+
+    private void init(FILE_TYPE file_type, Uri uri, Context context) {
+        InputStream inputStream = null;
+        try {
+            inputStream = context.getContentResolver().openInputStream(uri);
+            switch (file_type) {
+                case ORIGINAL:
+                    this.originalFileName = getFileNameFromUri(uri);
+                    setEncryptedFileNameFromOriginal(this.originalFileName);
+                    originalFile = new File(filesDir.getPath() + "/" + originalFileName);
+                    try {
+                        copyInputStreamToFile(inputStream, originalFile);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+
+                    break;
+
+                case ENCRYPTED:
+                    this.encryptedFileName = getFileNameFromUri(uri);
+                    setOriginalFileNameFromEncrypted(this.encryptedFileName);
+                    encryptedFile = new File(filesDir.getPath() + "/" + encryptedFileName);
+                    try {
+                        copyInputStreamToFile(inputStream, encryptedFile);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    break;
+
+                default:
+
+                    break;
+
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void importKey(Uri uri){
+        InputStream inputStream = null;
+        try {
+            inputStream = context.getContentResolver().openInputStream(uri);
+            byte[] keyBytes = new byte[inputStream.available()];
+            if(inputStream.read(keyBytes) !=-1){
+                this.key = AES.importKey(keyBytes);
+            }
+
+        } catch (IOException | NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void importIv(Uri uri){
+        InputStream inputStream = null;
+        try {
+            inputStream = context.getContentResolver().openInputStream(uri);
+            byte[] ivBytes = new byte[inputStream.available()];
+            if(inputStream.read(ivBytes) != -1){
+                this.iv = AES.importIv(ivBytes);
+            }
+
+        } catch (IOException | NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void copyInputStreamToFile(InputStream inputStream, File file)
+            throws IOException {
+
+        // append = false
+        try (FileOutputStream outputStream = new FileOutputStream(file, false)) {
+            int read;
+            byte[] bytes = new byte[DEFAULT_BUFFER_SIZE];
+            while ((read = inputStream.read(bytes)) != -1) {
+                outputStream.write(bytes, 0, read);
+            }
+        }
+        inputStream.close();
+
+
+    }
+    //TODO import key from file
 
     public File getIvFile() {
         return ivFile;
@@ -51,7 +155,6 @@ public class UserFile {
     public void setIvFile(File ivFile) {
         this.ivFile = ivFile;
     }
-    //TODO import key from file
 
     public String getOriginalFileName() {
         return originalFileName;
@@ -69,7 +172,7 @@ public class UserFile {
         this.iv = iv;
     }
 
-    public void generateIv(){
+    public void generateIv() {
         this.iv = AES.generateIv();
     }
 
@@ -93,73 +196,9 @@ public class UserFile {
         return ivFileName;
     }
 
-    public void setAlgorithm(ALGORITHM_CHOICE algorithmChoice){
+    public void setAlgorithm(ALGORITHM_CHOICE algorithmChoice) {
         algorithm.setAlgorithmChoice(algorithmChoice);
         setEncryptedFileNameFromOriginal(originalFileName);
-    }
-
-    public UserFile(FILE_TYPE file_type, Uri uri, Context context){
-        this.context = context;
-        this.file_type = file_type;
-        this.appFilesDir = context.getFilesDir();
-        this.algorithm = new Algorithm(DEFAULT_ALGORITHM);
-        this.iv = AES.generateIv();
-
-        InputStream inputStream = null;
-        try {
-            inputStream = context.getContentResolver().openInputStream(uri);
-            switch(file_type){
-                case ORIGINAL:
-                    this.originalFileName = getFileNameFromUri(uri);
-                    setEncryptedFileNameFromOriginal(this.originalFileName);
-                    originalFile = new File(appFilesDir.getPath() + "/" + originalFileName );
-                    try {
-                        copyInputStreamToFile(inputStream,originalFile);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-
-                    break;
-
-                case ENCRYPTED:
-                    this.encryptedFileName = getFileNameFromUri(uri);
-                    setOriginalFileNameFromEncrypted(this.encryptedFileName);
-                    encryptedFile = new File(appFilesDir.getPath() + "/" + encryptedFileName);
-                    try {
-                        copyInputStreamToFile(inputStream,encryptedFile);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-                    break;
-
-                default:
-
-                    break;
-
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-
-    }
-
-    private static void copyInputStreamToFile(InputStream inputStream, File file)
-            throws IOException {
-
-        // append = false
-        try (FileOutputStream outputStream = new FileOutputStream(file, false)) {
-            int read;
-            byte[] bytes = new byte[DEFAULT_BUFFER_SIZE];
-            while ((read = inputStream.read(bytes)) != -1) {
-                outputStream.write(bytes, 0, read);
-            }
-        }
-        inputStream.close();
-
-
     }
 
     private String getFileNameFromUri(Uri uri) {
@@ -185,18 +224,19 @@ public class UserFile {
         return result;
     }
 
-    private void setEncryptedFileNameFromOriginal(String original){
+    private void setEncryptedFileNameFromOriginal(String original) {
         this.encryptedFileName = original + algorithm.getEncryptedFileExtension();
         setIvFileName();
     }
-    private void setOriginalFileNameFromEncrypted(String encrypted){
+
+    private void setOriginalFileNameFromEncrypted(String encrypted) {
         int cut = encrypted.lastIndexOf(".aes");
         this.originalFileName = encrypted.substring(0, cut);
         setIvFileName();
     }
 
-    private void setIvFileName(){
-        if(this.encryptedFileName!=null){
+    private void setIvFileName() {
+        if (this.encryptedFileName != null) {
             this.ivFileName = encryptedFileName + ".iv";
         }
     }
@@ -211,9 +251,12 @@ public class UserFile {
             InvalidKeyException, BadPaddingException, InvalidAlgorithmParameterException,
             NoSuchPaddingException {
 
-        encryptedFile = new File(this.appFilesDir + "/" + this.encryptedFileName);
-        if(this.key == null){
+        encryptedFile = new File(this.filesDir + "/" + this.encryptedFileName);
+        if (this.key == null) {
             generateKey();
+        }
+        if(this.iv == null){
+            this.iv = AES.generateIv();
         }
 
 
@@ -222,9 +265,14 @@ public class UserFile {
 
     }
 
-    private void saveIvToFile(){
-        if(iv!=null){
-            ivFile = new File(this.appFilesDir + "/" + ivFileName);
+    public void decryptEncryptedFile() throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, IOException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+        originalFile = new File(this.filesDir + "/" + this.originalFileName);
+        AES.decryptFile(algorithm.getAlgorithm(), key, iv, encryptedFile, originalFile);
+    }
+
+    private void saveIvToFile() {
+        if (iv != null) {
+            ivFile = new File(this.filesDir + "/" + ivFileName);
 
             FileOutputStream fileOutputStream = null;
             try {
