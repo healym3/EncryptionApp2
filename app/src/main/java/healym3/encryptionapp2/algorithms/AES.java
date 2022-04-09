@@ -79,8 +79,12 @@ public class AES {
             BadPaddingException, IllegalBlockSizeException {
 
         Cipher cipher = Cipher.getInstance(algorithm);
-        cipher.init(Cipher.ENCRYPT_MODE, key, iv);
-
+        if(algorithm.contains("ECB")){
+            cipher.init(Cipher.ENCRYPT_MODE, key);
+        }
+        else{
+            cipher.init(Cipher.ENCRYPT_MODE, key, iv);
+        }
 
         FileInputStream inputStream = new FileInputStream(inputFile);
         FileOutputStream outputStream = new FileOutputStream(outputFile);
@@ -108,7 +112,12 @@ public class AES {
             NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException,
             BadPaddingException, IllegalBlockSizeException {
         Cipher cipher = Cipher.getInstance(algorithm);
-        cipher.init(Cipher.DECRYPT_MODE, key, iv);
+        if(algorithm.contains("ECB")){
+            cipher.init(Cipher.DECRYPT_MODE, key);
+        } else {
+            cipher.init(Cipher.DECRYPT_MODE, key, iv);
+        }
+
 
         FileInputStream inputStream = new FileInputStream(encryptedFile);
         FileOutputStream outputStream = new FileOutputStream(decryptedFile);
