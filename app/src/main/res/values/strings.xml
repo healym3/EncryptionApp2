@@ -27,4 +27,9 @@
     <string name="importKey">Import Key</string>
     <string name="title_file_encryption">Files</string>
     <string name="email_file">Email</string>
+    <string name="originalFileHeader">Encryption</string>
+    <string name="encryptedFileHeader">Decryption</string>
+    <string name="ivHeader">IV</string>
+    <string name="ivPlaceholder">No active IV.</string>
+    <string name="importIvButton">Import IV</string>
 </resources>

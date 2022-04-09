@@ -34,13 +34,24 @@ public class UserFile {
     private FILE_TYPE file_type;
     protected String originalFileName;
     private String encryptedFileName;
+    private String ivFileName;
 
     private File encryptedFile;
     protected File appFilesDir;
     protected File originalFile;
+    private File ivFile;
 
     protected SecretKey key;
     protected IvParameterSpec iv;
+
+    public File getIvFile() {
+        return ivFile;
+    }
+
+    public void setIvFile(File ivFile) {
+        this.ivFile = ivFile;
+    }
+    //TODO import key from file
 
     public String getOriginalFileName() {
         return originalFileName;
@@ -78,7 +89,9 @@ public class UserFile {
         return encryptedFile;
     }
 
-
+    public String getIvFileName() {
+        return ivFileName;
+    }
 
     public void setAlgorithm(ALGORITHM_CHOICE algorithmChoice){
         algorithm.setAlgorithmChoice(algorithmChoice);
@@ -90,6 +103,8 @@ public class UserFile {
         this.file_type = file_type;
         this.appFilesDir = context.getFilesDir();
         this.algorithm = new Algorithm(DEFAULT_ALGORITHM);
+        this.iv = AES.generateIv();
+
         InputStream inputStream = null;
         try {
             inputStream = context.getContentResolver().openInputStream(uri);
@@ -146,6 +161,7 @@ public class UserFile {
 
 
     }
+
     private String getFileNameFromUri(Uri uri) {
         String result = null;
         if (uri.getScheme().equals("content")) {
@@ -171,15 +187,23 @@ public class UserFile {
 
     private void setEncryptedFileNameFromOriginal(String original){
         this.encryptedFileName = original + algorithm.getEncryptedFileExtension();
+        setIvFileName();
     }
     private void setOriginalFileNameFromEncrypted(String encrypted){
         int cut = encrypted.lastIndexOf(".aes");
         this.originalFileName = encrypted.substring(0, cut);
+        setIvFileName();
     }
 
+    private void setIvFileName(){
+        if(this.encryptedFileName!=null){
+            this.ivFileName = encryptedFileName + ".iv";
+        }
+    }
 
     public void generateKey() throws NoSuchAlgorithmException {
         key = AES.generateKey(128);
+
     }
 
     public void encryptOriginalFile()
@@ -191,11 +215,26 @@ public class UserFile {
         if(this.key == null){
             generateKey();
         }
-        iv = AES.generateIv();
+
 
         AES.encryptFile(algorithm.getAlgorithm(), key, iv, originalFile, encryptedFile);
+        saveIvToFile();
 
+    }
 
+    private void saveIvToFile(){
+        if(iv!=null){
+            ivFile = new File(this.appFilesDir + "/" + ivFileName);
+
+            FileOutputStream fileOutputStream = null;
+            try {
+                fileOutputStream = new FileOutputStream(ivFile);
+                fileOutputStream.write(iv.getIV());
+                fileOutputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 

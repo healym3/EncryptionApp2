@@ -23,11 +23,14 @@ import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
 
 import healym3.encryptionapp2.data.FILE_TYPE;
 import healym3.encryptionapp2.data.UserFile;
@@ -56,7 +59,7 @@ public class FileEncryptionFragment extends Fragment {
             public void onChanged(@Nullable final UserFile newOriginalFile) {
                 originalFile = newOriginalFile;
                 displayFileName();
-                displayKey();
+                displayKeyAndIv();
             }
         };
 
@@ -67,13 +70,13 @@ public class FileEncryptionFragment extends Fragment {
             public void onChanged(@Nullable final UserFile newEncryptedFile) {
                 encryptedFile = newEncryptedFile;
                 displayFileName();
-                displayKey();
+                displayKeyAndIv();
             }
         };
 
         fileEncryptionViewModel.getOriginalFile().observe(getViewLifecycleOwner(), encryptedFileObserver);
 
-        binding.openFileButton.setOnClickListener(view -> {
+        binding.openFileButtonOriginalFile.setOnClickListener(view -> {
             chooseFileFromDevice();
         });
 
@@ -81,8 +84,9 @@ public class FileEncryptionFragment extends Fragment {
             if(originalFile !=null){
                 try {
                     originalFile.generateKey();
+                    originalFile.generateIv();
                     updateUserKeyViewModel();
-                    displayKey();
+                    displayKeyAndIv();
                 } catch (NoSuchAlgorithmException e) {
                     e.printStackTrace();
                 }
@@ -107,21 +111,22 @@ public class FileEncryptionFragment extends Fragment {
 
 
     public void composeEmail() {
-        Uri attachment = FileProvider.getUriForFile(requireContext(), "healym3.fileprovider", originalFile.getEncryptedFile());
-        Intent intent = createEmailIntent(attachment);
+        Uri encryptedFileUri = FileProvider.getUriForFile(requireContext(), "healym3.fileprovider", originalFile.getEncryptedFile());
+        Uri ivFileUri = FileProvider.getUriForFile(requireContext(), "healym3.fileprovider", originalFile.getIvFile());
+        ArrayList<Uri> attachmentUris = new ArrayList<>(2);
+        attachmentUris.add(encryptedFileUri);
+        attachmentUris.add(ivFileUri);
+        //Intent intent = createEmailIntent(attachment);
+        Intent intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+        intent.setType("vnd.android.cursor.dir/email");
+
+        intent.putExtra(Intent.EXTRA_SUBJECT, "EncryptedFile Attached");
+        intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM,attachmentUris);
         startActivity(intent);
 
     }
 
-    private Intent createEmailIntent(Uri uri){
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("vnd.android.cursor.dir/email");
 
-        intent.putExtra(Intent.EXTRA_SUBJECT, "EncryptedFile Attached");
-        intent.putExtra(Intent.EXTRA_STREAM, uri);
-
-        return intent;
-    }
 
     private void encryptFile() {
         if (originalFile != null){
@@ -137,20 +142,32 @@ public class FileEncryptionFragment extends Fragment {
 
     private void displayFileName(){
         if(originalFile !=null){
-            binding.fileNameTextView.setText(originalFile.getOriginalFileName());
+            binding.fileNameTextViewOriginalFile.setText(originalFile.getOriginalFileName());
+        }
+        if(encryptedFile!=null){
+            binding.fileNameTextViewEncryptedFile.setText(encryptedFile.getEncryptedFileName());
         }
     }
 
-    private void displayKey() {
+    private void displayKeyAndIv() {
         if(originalFile !=null){
             SecretKey key = originalFile.getKey();
+            IvParameterSpec iv = originalFile.getIv();
             if(key != null){
-                StringBuilder sb = new StringBuilder();
-                for (byte b: key.getEncoded()
-                ) {
-                    sb.append(b).append(", ");
-                }
-                binding.keyTextViewFileEncryption.setText(sb);
+                binding.keyTextViewOriginalFile.setText(Arrays.toString(key.getEncoded()));
+            }
+            if(iv!=null){
+                binding.ivTextViewOriginalFile.setText(Arrays.toString(iv.getIV()));
+            }
+        }
+        if(encryptedFile!=null){
+            SecretKey key = encryptedFile.getKey();
+            IvParameterSpec iv = encryptedFile.getIv();
+            if(key != null){
+                binding.keyTextViewEncryptedFile.setText(Arrays.toString(key.getEncoded()));
+            }
+            if(iv!=null){
+                binding.ivTextViewEncryptedFile.setText(Arrays.toString(iv.getIV()));
             }
         }
 
@@ -165,8 +182,7 @@ public class FileEncryptionFragment extends Fragment {
                 FileOutputStream fileOutputStream = null;
                 try {
                     fileOutputStream = new FileOutputStream(requireContext().getFilesDir() + "/AES.key");
-                    byte[] keyBytes = key.getEncoded();
-                    fileOutputStream.write(keyBytes);
+                    fileOutputStream.write(key.getEncoded());
                     fileOutputStream.close();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -174,7 +190,6 @@ public class FileEncryptionFragment extends Fragment {
             }
 
         }
-
 
     }
 
