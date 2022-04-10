@@ -93,7 +93,7 @@ public class FileEncryptionFragment extends Fragment {
         });
 
         binding.generateKeyButton.setOnClickListener(view -> {
-            if(originalFile !=null){
+            if (originalFile != null) {
                 try {
                     originalFile.generateKey();
                     originalFile.generateIv();
@@ -121,21 +121,21 @@ public class FileEncryptionFragment extends Fragment {
         binding.emailFileButton.setOnClickListener(view -> composeEmail());
 
         binding.importKeyButtonOriginalFile.setOnClickListener(view -> {
-            if(originalFile!=null) chooseOriginalKeyFromDevice();
+            if (originalFile != null) chooseOriginalKeyFromDevice();
         });
 
         binding.openFileButtonEncryptedFile.setOnClickListener(view -> chooseEncryptedFileFromDevice());
 
         binding.importKeyButtonEncryptedFile.setOnClickListener(view -> {
-            if(encryptedFile!=null) chooseEncryptedKeyFromDevice();
+            if (encryptedFile != null) chooseEncryptedKeyFromDevice();
         });
 
         binding.importIvButtonEncryptedFile.setOnClickListener(view -> {
-            if(encryptedFile!= null) chooseIvFromDevice();
+            if (encryptedFile != null) chooseIvFromDevice();
         });
         binding.decryptFileButton.setOnClickListener(view -> {
-            if(encryptedFile!=null){
-                if((encryptedFile.getKey() != null) && (encryptedFile.getIv() != null)){
+            if (encryptedFile != null) {
+                if ((encryptedFile.getKey() != null) && (encryptedFile.getIv() != null)) {
                     decryptFile();
                 }
             }
@@ -173,38 +173,38 @@ public class FileEncryptionFragment extends Fragment {
         intent.setType("vnd.android.cursor.dir/email");
 
         intent.putExtra(Intent.EXTRA_SUBJECT, "EncryptedFile Attached");
-        intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM,attachmentUris);
+        intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, attachmentUris);
         startActivity(intent);
 
     }
 
-    private void displayFileName(){
-        if(originalFile !=null){
+    private void displayFileName() {
+        if (originalFile != null) {
             binding.fileNameTextViewOriginalFile.setText(originalFile.getOriginalFileName());
         }
-        if(encryptedFile!=null){
+        if (encryptedFile != null) {
             binding.fileNameTextViewEncryptedFile.setText(encryptedFile.getEncryptedFileName());
         }
     }
 
     private void displayKeyAndIv() {
-        if(originalFile !=null){
+        if (originalFile != null) {
             SecretKey key = originalFile.getKey();
             IvParameterSpec iv = originalFile.getIv();
-            if(key != null){
+            if (key != null) {
                 binding.keyTextViewOriginalFile.setText(Arrays.toString(key.getEncoded()));
             }
-            if(iv!=null){
+            if (iv != null) {
                 binding.ivTextViewOriginalFile.setText(Arrays.toString(iv.getIV()));
             }
         }
-        if(encryptedFile!=null){
+        if (encryptedFile != null) {
             SecretKey key = encryptedFile.getKey();
             IvParameterSpec iv = encryptedFile.getIv();
-            if(key != null){
+            if (key != null) {
                 binding.keyTextViewEncryptedFile.setText(Arrays.toString(key.getEncoded()));
             }
-            if(iv!=null){
+            if (iv != null) {
                 binding.ivTextViewEncryptedFile.setText(Arrays.toString(iv.getIV()));
             }
         }
@@ -212,11 +212,11 @@ public class FileEncryptionFragment extends Fragment {
 
     }
 
-    private void saveKeyToFile(){
+    private void saveKeyToFile() {
 
-        if(originalFile !=null){
+        if (originalFile != null) {
             SecretKey key = originalFile.getKey();
-            if(key!=null){
+            if (key != null) {
                 FileOutputStream fileOutputStream = null;
                 try {
                     fileOutputStream = new FileOutputStream(requireContext().getFilesDir() + "/AES.key");
@@ -231,12 +231,12 @@ public class FileEncryptionFragment extends Fragment {
 
     }
 
-    private void updateUserKeyViewModel(){
+    private void updateUserKeyViewModel() {
         fileEncryptionViewModel.getOriginalFile().setValue(originalFile);
         fileEncryptionViewModel.getEncryptedFile().setValue(encryptedFile);
     }
 
-    private void chooseOriginalFileFromDevice(){
+    private void chooseOriginalFileFromDevice() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("*/*");
@@ -244,7 +244,7 @@ public class FileEncryptionFragment extends Fragment {
         startActivityForResult(intent, CHOOSE_ORIGINAL_FILE_FROM_DEVICE);
     }
 
-    private void chooseEncryptedFileFromDevice(){
+    private void chooseEncryptedFileFromDevice() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("*/*");
@@ -252,7 +252,7 @@ public class FileEncryptionFragment extends Fragment {
         startActivityForResult(intent, CHOOSE_ENCRYPTED_FILE_FROM_DEVICE);
     }
 
-    private void chooseOriginalKeyFromDevice(){
+    private void chooseOriginalKeyFromDevice() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("*/*");
@@ -260,7 +260,7 @@ public class FileEncryptionFragment extends Fragment {
         startActivityForResult(intent, CHOOSE_ORIGINAL_KEY_FROM_DEVICE);
     }
 
-    private void chooseEncryptedKeyFromDevice(){
+    private void chooseEncryptedKeyFromDevice() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("*/*");
@@ -268,7 +268,7 @@ public class FileEncryptionFragment extends Fragment {
         startActivityForResult(intent, CHOOSE_ENCRYPTED_KEY_FROM_DEVICE);
     }
 
-    private void chooseIvFromDevice(){
+    private void chooseIvFromDevice() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("*/*");
@@ -279,10 +279,10 @@ public class FileEncryptionFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode==Activity.RESULT_OK && data!=null){
-            switch (requestCode){
+        if (resultCode == Activity.RESULT_OK && data != null) {
+            switch (requestCode) {
                 case CHOOSE_ORIGINAL_FILE_FROM_DEVICE:
-                    fileEncryptionViewModel.getOriginalFile().setValue(new UserFile(FILE_TYPE.ORIGINAL, data.getData(),requireContext()));
+                    fileEncryptionViewModel.getOriginalFile().setValue(new UserFile(FILE_TYPE.ORIGINAL, data.getData(), requireContext()));
                     break;
 
                 case CHOOSE_ENCRYPTED_FILE_FROM_DEVICE:
@@ -313,13 +313,13 @@ public class FileEncryptionFragment extends Fragment {
     }
 
 
-
     @Override
     public void onResume() {
         super.onResume();
         displayFileName();
         displayKeyAndIv();
     }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();

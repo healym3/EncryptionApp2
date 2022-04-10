@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import healym3.encryptionapp2.databinding.FragmentHomeBinding;
@@ -31,54 +32,66 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        key = new SubstitutionKey();
-        key.setKey("defghijklmnopqrstuvwxyzabc");
-        displayKey();
-        //substitution = new Substitution(key);
+        final Observer<SubstitutionKey> substitutionKeyObserver = newSubstitutionKey -> {
+            key = newSubstitutionKey;
+            displayKey();
+        };
+
+        homeViewModel.getKey().observe(getViewLifecycleOwner(), substitutionKeyObserver);
+
+        final Observer<Substitution> substitutionObserver = newSubstitution -> substitution = newSubstitution;
+
+        homeViewModel.getSubstitution().observe(getViewLifecycleOwner(), substitutionObserver);
+
         binding.createKeyButton.setOnClickListener(view -> {
             key.generateKey();
+            homeViewModel.getKey().setValue(key);
             displayKey();
         });
+
         binding.saveKeyButton.setOnClickListener(view -> {
-            if(!TextUtils.isEmpty(binding.customKeyEditText.getText())){
-                if(key.setKey(binding.customKeyEditText.getText().toString())){
+            if (!TextUtils.isEmpty(binding.customKeyEditText.getText())) {
+                if (key.setKey(binding.customKeyEditText.getText().toString())) {
+                    homeViewModel.getKey().setValue(key);
+                    substitution.setKey(key);
+                    homeViewModel.getSubstitution().setValue(substitution);
                     displayKey();
                 }
-                Utils.hideSoftKeyboard(requireContext(),view);
+                Utils.hideSoftKeyboard(requireContext(), view);
                 binding.customKeyEditText.setText("");
             }
-
-
-
         });
 
         binding.encryptButton.setOnClickListener(view -> {
             if (!TextUtils.isEmpty(binding.plainEditText.getText())) {
-                substitution = new Substitution(key);
                 String cipherText = substitution.encrypt(String.valueOf(binding.plainEditText.getText()));
                 binding.cipherEditText.setText(cipherText);
-                Utils.hideSoftKeyboard(requireContext(),view);
+                homeViewModel.getSubstitution().setValue(substitution);
+                Utils.hideSoftKeyboard(requireContext(), view);
             }
-
         });
 
         binding.decryptButton.setOnClickListener(view -> {
             if (!TextUtils.isEmpty(binding.cipherEditText.getText())) {
-                substitution = new Substitution(key);
                 String plainText = substitution.decrypt(String.valueOf(binding.cipherEditText.getText()));
                 binding.plainEditText.setText(plainText);
-                Utils.hideSoftKeyboard(requireContext(),view);
+                homeViewModel.getSubstitution().setValue(substitution);
+                Utils.hideSoftKeyboard(requireContext(), view);
             }
         });
 
         return root;
     }
 
-    private void displayKey(){
+    private void displayKey() {
         binding.keyTextView.setText(key.toString());
     }
 
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        displayKey();
+    }
 
     @Override
     public void onDestroyView() {

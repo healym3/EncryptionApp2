@@ -12,19 +12,16 @@ public class Substitution {
         this.key = key;
     }
 
-    public Substitution() {
-    }
-
     public void setKey(SubstitutionKey key) {
         this.key = key;
     }
 
-    public String encrypt(String text){
+    public String encrypt(String text) {
         StringBuilder stringBuilder = new StringBuilder();
         text = text.toUpperCase(Locale.ROOT);
-        for (char ch: text.toCharArray()
-             ) {
-            if(key.keyHas(ch)){
+        for (char ch : text.toCharArray()
+        ) {
+            if (key.keyHas(ch)) {
                 stringBuilder.append(key.getCipherChar(ch));
             } else {
                 stringBuilder.append(ch);
@@ -36,13 +33,13 @@ public class Substitution {
 
     }
 
-    public String decrypt(String text){
+    public String decrypt(String text) {
         StringBuilder stringBuilder = new StringBuilder();
         text = text.toUpperCase(Locale.ROOT);
 
-        for (char ch: text.toCharArray()
-             ) {
-            if(key.decryptKeyHas(ch)){
+        for (char ch : text.toCharArray()
+        ) {
+            if (key.decryptKeyHas(ch)) {
                 stringBuilder.append(key.getPlainChar(ch));
             } else {
                 stringBuilder.append(ch);

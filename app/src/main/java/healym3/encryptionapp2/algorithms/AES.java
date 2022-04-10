@@ -1,19 +1,14 @@
 package healym3.encryptionapp2.algorithms;
 
-import android.net.Uri;
-import android.util.Log;
-
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
+
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.Base64;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -25,16 +20,13 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 public class AES {
-    public static final String TAG = "AES";
 
     public static SecretKey importKey(byte[] keyBytes) throws NoSuchAlgorithmException {
-        SecretKeySpec secretKeySpec = new SecretKeySpec(keyBytes, "AES");
-        return secretKeySpec;
+        return new SecretKeySpec(keyBytes, "AES");
     }
 
-    public static IvParameterSpec importIv(byte[] ivBytes) throws NoSuchAlgorithmException{
-        IvParameterSpec ivParameterSpec = new IvParameterSpec(ivBytes);
-        return ivParameterSpec;
+    public static IvParameterSpec importIv(byte[] ivBytes) throws NoSuchAlgorithmException {
+        return new IvParameterSpec(ivBytes);
     }
 
     public static SecretKey generateKey(int n) throws NoSuchAlgorithmException {
@@ -43,34 +35,10 @@ public class AES {
         return keyGenerator.generateKey();
     }
 
-    public static String encrypt(String algorithm, String input, SecretKey key,
-                                 IvParameterSpec iv) throws NoSuchPaddingException, NoSuchAlgorithmException,
-            InvalidAlgorithmParameterException, InvalidKeyException,
-            BadPaddingException, IllegalBlockSizeException {
-
-        Cipher cipher = Cipher.getInstance(algorithm);
-        cipher.init(Cipher.ENCRYPT_MODE, key, iv);
-        byte[] cipherText = cipher.doFinal(input.getBytes());
-        return Base64.getEncoder()
-                .encodeToString(cipherText);
-    }
-
     public static IvParameterSpec generateIv() {
         byte[] iv = new byte[16];
         new SecureRandom().nextBytes(iv);
         return new IvParameterSpec(iv);
-    }
-
-    public static String decrypt(String algorithm, String cipherText, SecretKey key,
-                                 IvParameterSpec iv) throws NoSuchPaddingException, NoSuchAlgorithmException,
-            InvalidAlgorithmParameterException, InvalidKeyException,
-            BadPaddingException, IllegalBlockSizeException {
-
-        Cipher cipher = Cipher.getInstance(algorithm);
-        cipher.init(Cipher.DECRYPT_MODE, key, iv);
-        byte[] plainText = cipher.doFinal(Base64.getDecoder()
-                .decode(cipherText));
-        return new String(plainText);
     }
 
     public static void encryptFile(String algorithm, SecretKey key, IvParameterSpec iv,
@@ -79,10 +47,9 @@ public class AES {
             BadPaddingException, IllegalBlockSizeException {
 
         Cipher cipher = Cipher.getInstance(algorithm);
-        if(algorithm.contains("ECB")){
+        if (algorithm.contains("ECB")) {
             cipher.init(Cipher.ENCRYPT_MODE, key);
-        }
-        else{
+        } else {
             cipher.init(Cipher.ENCRYPT_MODE, key, iv);
         }
 
@@ -112,7 +79,7 @@ public class AES {
             NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException,
             BadPaddingException, IllegalBlockSizeException {
         Cipher cipher = Cipher.getInstance(algorithm);
-        if(algorithm.contains("ECB")){
+        if (algorithm.contains("ECB")) {
             cipher.init(Cipher.DECRYPT_MODE, key);
         } else {
             cipher.init(Cipher.DECRYPT_MODE, key, iv);
