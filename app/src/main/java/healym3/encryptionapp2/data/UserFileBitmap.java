@@ -18,9 +18,8 @@ import javax.crypto.NoSuchPaddingException;
 
 import healym3.encryptionapp2.algorithms.AES;
 
-public class UserFileBitmap extends UserFile{
+public class UserFileBitmap extends UserFile {
     public static final int BITMAP_HEADER_SIZE = 54;
-    public static final String TAG = "UserFileBitmap";
     private File validCbcEncryptedBitmap;
     private File validEcbEncryptedBitmap;
     private File encryptedEcbFile;
@@ -43,20 +42,21 @@ public class UserFileBitmap extends UserFile{
         return validEcbEncryptedBitmap;
     }
 
-    private void setHeader(){
+    @SuppressWarnings("all")
+    private void setHeader() {
 
         try {
             InputStream inputStream = new FileInputStream(originalFile);
             header = new byte[BITMAP_HEADER_SIZE];
-            int bytesRead = inputStream.read(header);
+            inputStream.read(header);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
     }
 
-    private void setEncryptedFileNameFromOriginal(String original, MODE mode){
-        switch(mode){
+    private void setEncryptedFileNameFromOriginal(String original, MODE mode) {
+        switch (mode) {
             case ECB:
                 this.encryptedEcbFilename = original + ".ecb";
 
@@ -70,17 +70,16 @@ public class UserFileBitmap extends UserFile{
 
                 break;
         }
-        //Log.d(TAG, "setEncryptedFileNameFromOriginal: " + mode + this.algorithm.getAlgorithm());
     }
 
-    private void setAlgorithm(ALGORITHM_CHOICE algorithmChoice, MODE mode){
+    private void setAlgorithm(ALGORITHM_CHOICE algorithmChoice, MODE mode) {
         algorithm.setAlgorithmChoice(algorithmChoice);
         setEncryptedFileNameFromOriginal(originalFileName, mode);
     }
 
     @Override
     public void encryptOriginalFile() throws NoSuchAlgorithmException, IOException, IllegalBlockSizeException, InvalidKeyException, BadPaddingException, InvalidAlgorithmParameterException, NoSuchPaddingException {
-        if(this.key == null){
+        if (this.key == null) {
             generateKey();
         }
         iv = AES.generateIv();
@@ -95,9 +94,9 @@ public class UserFileBitmap extends UserFile{
         createValidBitmapFromEncrypted();
     }
 
-    private void createValidBitmapFromEncrypted(){
+    private void createValidBitmapFromEncrypted() {
 
-        if(header!=null){
+        if (header != null) {
             this.validCbcEncryptedBitmap = new File(encryptedCBCFile.getPath() + ".bmp");
             this.validEcbEncryptedBitmap = new File(encryptedEcbFile.getPath() + ".bmp");
 

@@ -1,22 +1,20 @@
 package healym3.encryptionapp2.ui.files;
 
-import androidx.core.content.FileProvider;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -37,6 +35,7 @@ import healym3.encryptionapp2.data.FILE_TYPE;
 import healym3.encryptionapp2.data.UserFile;
 import healym3.encryptionapp2.databinding.FileEncryptionFragmentBinding;
 
+@SuppressWarnings("deprecation")
 public class FileEncryptionFragment extends Fragment {
     public static final String TAG = "FileEncryptionFragment";
     private final int CHOOSE_ORIGINAL_FILE_FROM_DEVICE = 1020;
@@ -66,31 +65,23 @@ public class FileEncryptionFragment extends Fragment {
         //encryptedFilesDir = new File(requireContext().getFilesDir() + "/encrypted");
 
 
-        final Observer<UserFile> originalFileObserver = new Observer<UserFile>() {
-            @Override
-            public void onChanged(@Nullable final UserFile newOriginalFile) {
-                originalFile = newOriginalFile;
-                displayFileName();
-                displayKeyAndIv();
-            }
+        final Observer<UserFile> originalFileObserver = newOriginalFile -> {
+            originalFile = newOriginalFile;
+            displayFileName();
+            displayKeyAndIv();
         };
 
         fileEncryptionViewModel.getOriginalFile().observe(getViewLifecycleOwner(), originalFileObserver);
 
-        final Observer<UserFile> encryptedFileObserver = new Observer<UserFile>() {
-            @Override
-            public void onChanged(@Nullable final UserFile newEncryptedFile) {
-                encryptedFile = newEncryptedFile;
-                displayFileName();
-                displayKeyAndIv();
-            }
+        final Observer<UserFile> encryptedFileObserver = newEncryptedFile -> {
+            encryptedFile = newEncryptedFile;
+            displayFileName();
+            displayKeyAndIv();
         };
 
         fileEncryptionViewModel.getEncryptedFile().observe(getViewLifecycleOwner(), encryptedFileObserver);
 
-        binding.openFileButtonOriginalFile.setOnClickListener(view -> {
-            chooseOriginalFileFromDevice();
-        });
+        binding.openFileButtonOriginalFile.setOnClickListener(view -> chooseOriginalFileFromDevice());
 
         binding.generateKeyButton.setOnClickListener(view -> {
             if (originalFile != null) {
@@ -106,9 +97,7 @@ public class FileEncryptionFragment extends Fragment {
             }
         });
 
-        binding.saveKeyAESButton.setOnClickListener(view -> {
-            saveKeyToFile();
-        });
+        binding.saveKeyAESButton.setOnClickListener(view -> saveKeyToFile());
 
         binding.encryptFileButton.setOnClickListener(view -> {
             if (originalFile != null) {
@@ -217,7 +206,7 @@ public class FileEncryptionFragment extends Fragment {
         if (originalFile != null) {
             SecretKey key = originalFile.getKey();
             if (key != null) {
-                FileOutputStream fileOutputStream = null;
+                FileOutputStream fileOutputStream;
                 try {
                     fileOutputStream = new FileOutputStream(requireContext().getFilesDir() + "/AES.key");
                     fileOutputStream.write(key.getEncoded());

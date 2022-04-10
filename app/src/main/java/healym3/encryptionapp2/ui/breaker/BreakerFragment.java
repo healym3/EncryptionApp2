@@ -1,7 +1,6 @@
 package healym3.encryptionapp2.ui.breaker;
 
 import android.app.Activity;
-
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,15 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import java.io.BufferedReader;
-
-import java.io.IOException;
-import java.io.InputStreamReader;
-
-
-
 import healym3.encryptionapp2.algorithms.Breaker;
-
 import healym3.encryptionapp2.databinding.FragmentBreakerBinding;
 import healym3.encryptionapp2.util.Utils;
 
@@ -43,11 +34,11 @@ public class BreakerFragment extends Fragment {
 
 
         binding.breakCipherButton.setOnClickListener(view -> {
-            if(!TextUtils.isEmpty(binding.cipherToBreakEditText.getText())){
+            if (!TextUtils.isEmpty(binding.cipherToBreakEditText.getText())) {
                 Breaker breaker = new Breaker(getContext());
                 breaker.breakCipher(binding.cipherToBreakEditText.getText().toString());
                 binding.cipherBreakerResultEditText.setText(breaker.getBreakerResult());
-                Utils.hideSoftKeyboard(requireContext(),view);
+                Utils.hideSoftKeyboard(requireContext(), view);
             }
 
         });
@@ -57,7 +48,8 @@ public class BreakerFragment extends Fragment {
         return root;
     }
 
-    private void chooseTextFile(){
+    @SuppressWarnings("deprecation")
+    private void chooseTextFile() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("text/plain");
@@ -65,42 +57,25 @@ public class BreakerFragment extends Fragment {
         startActivityForResult(intent, CHOOSE_TXT_FROM_STORAGE);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == CHOOSE_TXT_FROM_STORAGE && resultCode == Activity.RESULT_OK){
+        if (requestCode == CHOOSE_TXT_FROM_STORAGE && resultCode == Activity.RESULT_OK) {
 
-            if(data != null){
+            if (data != null) {
                 Uri uri = data.getData();
-                getTextFromFile(uri);
-
+                setCipherText(Utils.getTextFromFile(requireContext(), uri));
             }
         }
     }
 
-    private void getTextFromFile(Uri uri) {
-        try {
-            InputStreamReader inputStreamReader = new InputStreamReader(requireContext().getContentResolver().openInputStream(uri));
-            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-            StringBuilder stringBuilder = new StringBuilder();
-            String line;
-            while((line = bufferedReader.readLine()) != null){
-                stringBuilder.append(String.format("%s\n", line));
-            }
-            setCipherText(stringBuilder.toString());
-            bufferedReader.close();
-            inputStreamReader.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void setCipherText(String cipherText){
-        if(cipherText != null){
+    private void setCipherText(String cipherText) {
+        if (cipherText != null) {
             binding.cipherToBreakEditText.setText(cipherText);
         }
     }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();

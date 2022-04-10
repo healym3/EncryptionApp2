@@ -2,9 +2,7 @@ package healym3.encryptionapp2.ui.aes;
 
 import android.app.Activity;
 import android.content.Intent;
-
 import android.os.Bundle;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,12 +20,10 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
-
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
-
 
 import healym3.encryptionapp2.data.UserFileBitmap;
 import healym3.encryptionapp2.databinding.FragmentAesBinding;
@@ -44,7 +40,7 @@ public class AesFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if(userFile!=null){
+        if (userFile != null) {
             displayImage();
             displayKey();
         }
@@ -60,13 +56,10 @@ public class AesFragment extends Fragment {
 
         binding.buttonLoadBitmap.setOnClickListener(view -> chooseBmpFromDevice());
 
-        final Observer<UserFileBitmap> userFileObserver = new Observer<UserFileBitmap>() {
-            @Override
-            public void onChanged(@Nullable final UserFileBitmap newUserFile) {
-                userFile = newUserFile;
-                displayImage();
-                displayKey();
-            }
+        final Observer<UserFileBitmap> userFileObserver = newUserFile -> {
+            userFile = newUserFile;
+            displayImage();
+            displayKey();
         };
 
         // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
@@ -77,9 +70,9 @@ public class AesFragment extends Fragment {
 
     private void displayKey() {
         SecretKey key = userFile.getKey();
-        if(key != null){
+        if (key != null) {
             StringBuilder sb = new StringBuilder();
-            for (byte b: key.getEncoded()
+            for (byte b : key.getEncoded()
             ) {
                 sb.append(b).append(", ");
             }
@@ -94,8 +87,8 @@ public class AesFragment extends Fragment {
         binding = null;
     }
 
-
-    private void chooseBmpFromDevice(){
+    @SuppressWarnings("deprecation")
+    private void chooseBmpFromDevice() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("image/*");
@@ -103,12 +96,13 @@ public class AesFragment extends Fragment {
         startActivityForResult(intent, CHOOSE_BMP_FROM_DEVICE);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == CHOOSE_BMP_FROM_DEVICE && resultCode == Activity.RESULT_OK){
+        if (requestCode == CHOOSE_BMP_FROM_DEVICE && resultCode == Activity.RESULT_OK) {
 
-            if(data != null){
+            if (data != null) {
                 AESViewModel.getUserFile().setValue(new UserFileBitmap(data.getData(), requireContext()));
 
                 try {

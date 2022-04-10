@@ -24,11 +24,9 @@ import javax.crypto.spec.IvParameterSpec;
 import healym3.encryptionapp2.algorithms.AES;
 
 public class UserFile {
-    public static final String ALGORITHM = "AES/ECB/PKCS5Padding";
     public static final int DEFAULT_BUFFER_SIZE = 8192;
 
     public static ALGORITHM_CHOICE DEFAULT_ALGORITHM = ALGORITHM_CHOICE.AES_CBC_PADDING;
-    private final FILE_TYPE file_type;
     protected Algorithm algorithm;
     protected Context context;
     protected String originalFileName;
@@ -47,7 +45,6 @@ public class UserFile {
 
     public UserFile(FILE_TYPE file_type, Uri uri, Context context) {
         this.context = context;
-        this.file_type = file_type;
         this.filesDir = context.getFilesDir();
         this.algorithm = new Algorithm(DEFAULT_ALGORITHM);
 
@@ -56,15 +53,30 @@ public class UserFile {
 
     public UserFile(FILE_TYPE file_type, Uri uri, Context context, File filesDir) {
         this.context = context;
-        this.file_type = file_type;
         this.filesDir = filesDir;
         this.algorithm = new Algorithm(DEFAULT_ALGORITHM);
 
         init(file_type, uri, context);
     }
 
+    private static void copyInputStreamToFile(InputStream inputStream, File file)
+            throws IOException {
+
+        // append = false
+        try (FileOutputStream outputStream = new FileOutputStream(file, false)) {
+            int read;
+            byte[] bytes = new byte[DEFAULT_BUFFER_SIZE];
+            while ((read = inputStream.read(bytes)) != -1) {
+                outputStream.write(bytes, 0, read);
+            }
+        }
+        inputStream.close();
+
+
+    }
+
     private void init(FILE_TYPE file_type, Uri uri, Context context) {
-        InputStream inputStream = null;
+        InputStream inputStream;
         try {
             inputStream = context.getContentResolver().openInputStream(uri);
             switch (file_type) {
@@ -103,12 +115,12 @@ public class UserFile {
         }
     }
 
-    public void importKey(Uri uri){
-        InputStream inputStream = null;
+    public void importKey(Uri uri) {
+        InputStream inputStream;
         try {
             inputStream = context.getContentResolver().openInputStream(uri);
             byte[] keyBytes = new byte[inputStream.available()];
-            if(inputStream.read(keyBytes) !=-1){
+            if (inputStream.read(keyBytes) != -1) {
                 this.key = AES.importKey(keyBytes);
             }
 
@@ -117,34 +129,18 @@ public class UserFile {
         }
     }
 
-    public void importIv(Uri uri){
-        InputStream inputStream = null;
+    public void importIv(Uri uri) {
+        InputStream inputStream;
         try {
             inputStream = context.getContentResolver().openInputStream(uri);
             byte[] ivBytes = new byte[inputStream.available()];
-            if(inputStream.read(ivBytes) != -1){
+            if (inputStream.read(ivBytes) != -1) {
                 this.iv = AES.importIv(ivBytes);
             }
 
         } catch (IOException | NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
-    }
-
-    private static void copyInputStreamToFile(InputStream inputStream, File file)
-            throws IOException {
-
-        // append = false
-        try (FileOutputStream outputStream = new FileOutputStream(file, false)) {
-            int read;
-            byte[] bytes = new byte[DEFAULT_BUFFER_SIZE];
-            while ((read = inputStream.read(bytes)) != -1) {
-                outputStream.write(bytes, 0, read);
-            }
-        }
-        inputStream.close();
-
-
     }
     //TODO import key from file
 
@@ -255,7 +251,7 @@ public class UserFile {
         if (this.key == null) {
             generateKey();
         }
-        if(this.iv == null){
+        if (this.iv == null) {
             this.iv = AES.generateIv();
         }
 
@@ -274,7 +270,7 @@ public class UserFile {
         if (iv != null) {
             ivFile = new File(this.filesDir + "/" + ivFileName);
 
-            FileOutputStream fileOutputStream = null;
+            FileOutputStream fileOutputStream;
             try {
                 fileOutputStream = new FileOutputStream(ivFile);
                 fileOutputStream.write(iv.getIV());
