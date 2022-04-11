@@ -19,6 +19,9 @@ import androidx.lifecycle.ViewModelProvider;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -49,6 +52,7 @@ public class FileEncryptionFragment extends Fragment {
     private UserFile encryptedFile;
     private File originalFilesDir;
     private File encryptedFilesDir;
+    private Path originalPath, encryptedPath;
 
 //    public static FileEncryptionFragment newInstance() {
 //        return new FileEncryptionFragment();
@@ -61,8 +65,14 @@ public class FileEncryptionFragment extends Fragment {
         binding = FileEncryptionFragmentBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        //originalFilesDir = new File(requireContext().getFilesDir() + "/original");
-        //encryptedFilesDir = new File(requireContext().getFilesDir() + "/encrypted");
+        try {
+            originalPath = Paths.get(requireContext().getFilesDir() + "/original");
+            encryptedPath = Paths.get(requireContext().getFilesDir() + "/encrypted");
+            Files.createDirectory(originalPath);
+            Files.createDirectory(encryptedPath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
 
         final Observer<UserFile> originalFileObserver = newOriginalFile -> {
@@ -271,11 +281,11 @@ public class FileEncryptionFragment extends Fragment {
         if (resultCode == Activity.RESULT_OK && data != null) {
             switch (requestCode) {
                 case CHOOSE_ORIGINAL_FILE_FROM_DEVICE:
-                    fileEncryptionViewModel.getOriginalFile().setValue(new UserFile(FILE_TYPE.ORIGINAL, data.getData(), requireContext()));
+                    fileEncryptionViewModel.getOriginalFile().setValue(new UserFile(FILE_TYPE.ORIGINAL, data.getData(), requireContext(), originalPath));
                     break;
 
                 case CHOOSE_ENCRYPTED_FILE_FROM_DEVICE:
-                    fileEncryptionViewModel.getEncryptedFile().setValue(new UserFile(FILE_TYPE.ENCRYPTED, data.getData(), requireContext()));
+                    fileEncryptionViewModel.getEncryptedFile().setValue(new UserFile(FILE_TYPE.ENCRYPTED, data.getData(), requireContext(), encryptedPath));
                     break;
 
                 case CHOOSE_ORIGINAL_KEY_FROM_DEVICE:

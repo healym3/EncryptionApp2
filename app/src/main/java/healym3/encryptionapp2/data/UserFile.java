@@ -4,12 +4,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.OpenableColumns;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -51,9 +53,10 @@ public class UserFile {
         init(file_type, uri, context);
     }
 
-    public UserFile(FILE_TYPE file_type, Uri uri, Context context, File filesDir) {
+    public UserFile(FILE_TYPE file_type, Uri uri, Context context, Path filesDir) {
         this.context = context;
-        this.filesDir = filesDir;
+        this.filesDir = filesDir.toFile();
+        Log.d("TAG", "UserFile: filesDir" + filesDir);
         this.algorithm = new Algorithm(DEFAULT_ALGORITHM);
 
         init(file_type, uri, context);
