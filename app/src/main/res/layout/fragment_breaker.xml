@@ -13,6 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/open_file"
+        app:icon="@drawable/open_file_icon"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -46,6 +47,7 @@
         android:layout_height="wrap_content"
         android:text="@string/breakCipherButton"
         android:textColor="@color/primaryTextColor"
+        app:icon="@drawable/ic_breaker_black_chart"
         app:layout_constraintBottom_toTopOf="@+id/cardViewSubstitutionResults"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

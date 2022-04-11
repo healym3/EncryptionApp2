@@ -32,4 +32,7 @@
     <string name="ivHeader">IV</string>
     <string name="ivPlaceholder">No active IV.</string>
     <string name="importIvButton">Import IV</string>
+    <string name="imageViewLabelOriginal">Original</string>
+    <string name="imageViewLabelECB">ECB Mode</string>
+    <string name="imageViewLabelCBC">CBC Mode</string>
 </resources>
