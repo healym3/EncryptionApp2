@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">EncryptionApp2</string>
     <string name="title_activity_main2">MainActivity2</string>
-    <string name="title_home">Home</string>
+    <string name="title_home">Substitution</string>
     <string name="title_breaker">Breaker</string>
-    <string name="title_aes">AES</string>
+    <string name="title_aes">Bitmap</string>
     <string name="keyText">Key:</string>
     <string name="keyPlaceholder">No active key.</string>
     <string name="createKeyButton">Generate Key</string>
