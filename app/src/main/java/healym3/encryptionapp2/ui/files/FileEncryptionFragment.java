@@ -50,13 +50,8 @@ public class FileEncryptionFragment extends Fragment {
     private FileEncryptionFragmentBinding binding;
     private UserFile originalFile;
     private UserFile encryptedFile;
-    private File originalFilesDir;
-    private File encryptedFilesDir;
     private Path originalPath, encryptedPath;
 
-//    public static FileEncryptionFragment newInstance() {
-//        return new FileEncryptionFragment();
-//    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
