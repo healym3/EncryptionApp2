@@ -59,4 +59,9 @@
         android:name="healym3.encryptionapp2.ui.files.FileEncryptionFragment"
         android:label="@string/title_file_encryption"
         tools:layout="@layout/file_encryption_fragment" />
+    <fragment
+        android:id="@+id/navigation_aes_vs_des"
+        android:name="healym3.encryptionapp2.ui.aesvsdes.AesVsDesFragment"
+        android:label="@string/title_Aes_vs_Des"
+        tools:layout="@layout/aes_vs_des_fragment" />
 </navigation>

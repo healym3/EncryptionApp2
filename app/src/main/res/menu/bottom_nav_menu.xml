@@ -20,5 +20,10 @@
         android:id="@+id/navigation_file_encryption"
         android:icon="@drawable/ic_file_encryption_mail"
         android:title="@string/title_file_encryption" />
+    <item
+        android:id="@+id/navigation_aes_vs_des"
+        android:icon="@drawable/open_file_icon"
+        android:title="@string/title_Aes_vs_Des"
+        />
 
 </menu>
