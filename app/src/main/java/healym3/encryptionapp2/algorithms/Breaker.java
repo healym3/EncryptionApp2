@@ -17,6 +17,7 @@ import java.util.Objects;
 
 import healym3.encryptionapp2.data.Quadgram;
 import healym3.encryptionapp2.data.SubstitutionKey;
+import healym3.encryptionapp2.data.SubstitutionKeyError;
 import healym3.encryptionapp2.util.Utils;
 
 
@@ -128,7 +129,7 @@ public class Breaker {
             keyStringBuilder.append(transIntToChar.get(i));
         }
         SubstitutionKey substitutionKey = new SubstitutionKey();
-        if (substitutionKey.setKey(keyStringBuilder.toString())) {
+        if (substitutionKey.setKey(keyStringBuilder.toString()) == SubstitutionKeyError.OK) {
             Substitution substitution = new Substitution(substitutionKey);
             breakerResult = substitution.decrypt(cipher);
         }
