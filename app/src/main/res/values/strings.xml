@@ -37,7 +37,7 @@
     <string name="imageViewLabelCBC">CBC Mode</string>
     <string name="durationLabel">Duration:</string>
     <string name="fileSizeLabel">File Size:</string>
-    <string name="durationPlaceholder">Milliseconds will appear here.</string>
+    <string name="durationPlaceholder">N/A ms</string>
     <string name="fileSizePlaceholder">Bytes will appear here.</string>
     <string name="desLabel">DES Encryption Results</string>
     <string name="aesLabel">AES Encryption Results</string>

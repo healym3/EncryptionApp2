@@ -92,9 +92,9 @@ public class AesVsDesFragment extends Fragment {
     private void displayResult(){
         if(userFileCompare != null){
             binding.aesDurationTextView.setText((int) userFileCompare.getDurationAES() + " ms");
-            binding.aesFileSizeTextView.setText((int) (userFileCompare.getEncryptedAESFileSize()/1024) + "kb");
+            binding.fileSizeTextView.setText((int) (userFileCompare.getEncryptedAESFileSize()/1024) + "kb");
             binding.desDurationTextView.setText((int) userFileCompare.getDurationDES() + " ms");
-            binding.desFileSizeTextView.setText((int) (userFileCompare.getEncryptedDESFileSize()/1024) + " kb");
+
 
         }
     }

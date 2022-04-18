@@ -8,18 +8,6 @@
 
 
     <TextView
-        android:id="@+id/desFileSizeTextView"
-        style="@style/textStyle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/fileSizePlaceholder"
-        android:textAlignment="textEnd"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.625"
-        app:layout_constraintStart_toEndOf="@+id/aesFileSizeLabel"
-        app:layout_constraintTop_toBottomOf="@+id/desDurationTextView" />
-
-    <TextView
         android:id="@+id/desDurationLabel"
         style="@style/textStyle"
         android:layout_width="wrap_content"
@@ -27,19 +15,9 @@
         android:layout_marginStart="8dp"
         android:text="@string/durationLabel"
         android:textAlignment="viewStart"
+        android:textSize="32sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView7" />
-
-    <TextView
-        android:id="@+id/desFileSizeLabel"
-        style="@style/textStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="@string/fileSizeLabel"
-        android:textAlignment="viewStart"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/desDurationLabel" />
 
     <TextView
         android:id="@+id/desDurationTextView"
@@ -48,6 +26,8 @@
         android:layout_height="wrap_content"
         android:text="@string/durationPlaceholder"
         android:textAlignment="textEnd"
+        android:textSize="32sp"
+        android:textStyle="bold|italic"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.625"
         app:layout_constraintStart_toEndOf="@+id/aesDurationLabel"
@@ -70,6 +50,7 @@
         android:layout_height="wrap_content"
         android:text="@string/durationLabel"
         android:textAlignment="viewStart"
+        android:textSize="32sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView8" />
 
@@ -80,8 +61,9 @@
         android:layout_height="wrap_content"
         android:text="@string/fileSizeLabel"
         android:textAlignment="viewStart"
+        android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/aesDurationLabel" />
+        app:layout_constraintTop_toBottomOf="@+id/openUserFile" />
 
     <TextView
         android:id="@+id/aesDurationTextView"
@@ -90,28 +72,34 @@
         android:layout_height="wrap_content"
         android:text="@string/durationPlaceholder"
         android:textAlignment="textEnd"
+        android:textSize="32sp"
+        android:textStyle="bold|italic"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/aesDurationLabel"
         app:layout_constraintTop_toBottomOf="@+id/textView8" />
 
     <TextView
-        android:id="@+id/aesFileSizeTextView"
+        android:id="@+id/fileSizeTextView"
         style="@style/textStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/fileSizePlaceholder"
         android:textAlignment="textEnd"
+        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/aesFileSizeLabel"
-        app:layout_constraintTop_toBottomOf="@+id/aesDurationTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/openUserFile" />
 
     <TextView
         android:id="@+id/textView7"
+        style="@style/labelTextView"
         android:text="@string/desLabel"
+        android:textAlignment="center"
+        android:textSize="34sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/aesFileSizeTextView"
-        style="@style/labelTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/aesDurationTextView" />
 
     <TextView
         android:id="@+id/textView8"
@@ -119,8 +107,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/aesLabel"
+        android:textAlignment="center"
+        android:textSize="34sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/openUserFile" />
+        app:layout_constraintTop_toBottomOf="@+id/fileSizeTextView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
