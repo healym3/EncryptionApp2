@@ -40,6 +40,9 @@ public class BreakerFragment extends Fragment {
                 binding.cipherBreakerResultEditText.setText(breaker.getBreakerResult());
                 Utils.hideSoftKeyboard(requireContext(), view);
             }
+            else{
+                Utils.displaySnackbar(binding.cipherToBreakEditText, binding.cipherToBreakEditText, "No cipher text has been entered or loaded from file.");
+            }
 
         });
 
@@ -67,6 +70,9 @@ public class BreakerFragment extends Fragment {
                 Uri uri = data.getData();
                 setCipherText(Utils.getTextFromFile(requireContext(), uri));
             }
+        }
+        else{
+            Utils.displaySnackbar(binding.cipherToBreakEditText, binding.cipherToBreakEditText, "Opening file canceled.");
         }
     }
 

@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Objects;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -27,6 +28,7 @@ import javax.crypto.SecretKey;
 
 import healym3.encryptionapp2.data.UserFileBitmap;
 import healym3.encryptionapp2.databinding.FragmentBitmapBinding;
+import healym3.encryptionapp2.util.Utils;
 
 public class BitmapFragment extends Fragment {
 
@@ -107,11 +109,16 @@ public class BitmapFragment extends Fragment {
 
                 try {
                     userFile.encryptOriginalFile();
+                    Utils.displaySnackbar(binding.imageViewOriginal, binding.imageViewOriginal, "Bitmap encryption complete.");
                 } catch (NoSuchAlgorithmException | IOException | IllegalBlockSizeException | InvalidKeyException | BadPaddingException | InvalidAlgorithmParameterException | NoSuchPaddingException e) {
                     e.printStackTrace();
+                    Utils.displaySnackbar(binding.imageViewOriginal, binding.imageViewOriginal, Objects.requireNonNull(e.getMessage()).substring(0,120));
                 }
 
             }
+        }
+        else{
+            Utils.displaySnackbar(binding.imageViewOriginal, binding.imageViewOriginal,"Opening file cancelled.");
         }
     }
 
