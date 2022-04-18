@@ -154,9 +154,9 @@
             android:hint="@string/cipherTextHint"
             android:inputType="textMultiLine"
             android:selectAllOnFocus="true"
-            android:text="@string/cipherTextPlaceholder"
             android:textAlignment="textStart"
             android:textColor="#004D40"
+            android:textColorHint="#004D40"
             android:textSize="20sp"
             tools:ignore="TextContrastCheck" />
 

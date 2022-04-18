@@ -66,13 +66,13 @@ public class SubstitutionFragment extends Fragment {
                         binding.customKeyEditText.setText("");
                         break;
                     case INVALID_LENGTH:
-                        displaySnackbar(binding.customKeyEditText, binding.plainEditText, "Key must be as long as alphabet.");
+                        Utils.displaySnackbar(binding.customKeyEditText, binding.plainEditText, "Key must be as long as alphabet.");
                         break;
                     case NOT_UNIQUE:
-                        displaySnackbar(binding.customKeyEditText, binding.plainEditText,"Key letters must be unique.");
+                        Utils.displaySnackbar(binding.customKeyEditText, binding.plainEditText,"Key letters must be unique.");
                         break;
                     case INVALID_CHARACTER:
-                        displaySnackbar(binding.customKeyEditText, binding.plainEditText,"Key letters must be from alphabet.");
+                        Utils.displaySnackbar(binding.customKeyEditText, binding.plainEditText,"Key letters must be from alphabet.");
                         break;
                     default:
 
@@ -80,7 +80,7 @@ public class SubstitutionFragment extends Fragment {
 
             }
             else{
-                displaySnackbar(binding.customKeyEditText, binding.plainEditText, "No custom key has been entered.");
+                Utils.displaySnackbar(binding.customKeyEditText, binding.plainEditText, "No custom key has been entered.");
             }
         });
 
@@ -94,7 +94,7 @@ public class SubstitutionFragment extends Fragment {
                         " Cipher: " + cipherText);
             }
             else{
-                displaySnackbar(binding.plainEditText, binding.plainEditText, "No plain text has been entered.");
+                Utils.displaySnackbar(binding.plainEditText, binding.plainEditText, "No plain text has been entered.");
             }
         });
 
@@ -108,23 +108,13 @@ public class SubstitutionFragment extends Fragment {
                         " Cipher: " + plainText);
             }
             else{
-                displaySnackbar(binding.cipherEditText, binding.plainEditText, "No cipher text has been entered.");
+                Utils.displaySnackbar(binding.cipherEditText, binding.plainEditText, "No cipher text has been entered.");
             }
         });
 
         return root;
     }
 
-    private void displaySnackbar(View contextView, String message){
-        Snackbar.make(contextView, message, Snackbar.LENGTH_SHORT)
-                .show();
-    }
-
-    private void displaySnackbar(View contextView, View anchorView, String message){
-        Snackbar.make(contextView, message, Snackbar.LENGTH_SHORT)
-                .setAnchorView(anchorView)
-                .show();
-    }
 
     private void displayKey() {
         binding.keyTextView.setText(key.toString());

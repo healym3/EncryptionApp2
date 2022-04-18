@@ -5,6 +5,8 @@ import android.net.Uri;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,6 +15,12 @@ import java.nio.charset.StandardCharsets;
 
 public class Utils {
     public static final int DEFAULT_BUFFER_SIZE = 8192;
+
+    public static void displaySnackbar(View contextView, View anchorView, String message){
+        Snackbar.make(contextView, message, Snackbar.LENGTH_SHORT)
+                .setAnchorView(anchorView)
+                .show();
+    }
 
     public static String getJsonFromAssets(Context context, String fileName) {
         String jsonString;
