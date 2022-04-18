@@ -26,12 +26,12 @@ public class SubstitutionKey {
         keyString = "";
     }
 
-    private SubstitutionKeyError checkKey(String keyString) {
+    private SubstitutionKeyImportResult checkKey(String keyString) {
         //Log.d("Key", "checkKey: keyString" + keyString);
         // Key must be as long as alphabet
         if (keyString.length() != ALPHABET.length()) {
             Log.d("Key", "checkKey: key must be as long as alphabet" + keyString.length() + ALPHABET.length());
-            return SubstitutionKeyError.INVALID_LENGTH;
+            return SubstitutionKeyImportResult.INVALID_LENGTH;
         }
         keyString = keyString.toUpperCase(Locale.ROOT);
 
@@ -42,7 +42,7 @@ public class SubstitutionKey {
         }
         if (keySet.size() != ALPHABET.length()) {
             Log.d("Key", "checkKey: Key characters must be unique");
-            return SubstitutionKeyError.NOT_UNIQUE;
+            return SubstitutionKeyImportResult.NOT_UNIQUE;
         }
 
         Set<Character> alphabetSet = new HashSet<>();
@@ -51,7 +51,7 @@ public class SubstitutionKey {
         }
         if (!keySet.equals(alphabetSet)) {
             Log.d("Key", "checkKey: Key must contain characters of alphabet");
-            return SubstitutionKeyError.INVALID_CHARACTER;
+            return SubstitutionKeyImportResult.INVALID_CHARACTER;
         }
         //Log.d("Key", "checkKey: keySet" + keySet.toString());
 
@@ -66,11 +66,11 @@ public class SubstitutionKey {
 
         this.keyString = keyString;
 
-        return SubstitutionKeyError.OK;
+        return SubstitutionKeyImportResult.OK;
     }
 
 
-    public SubstitutionKeyError setKey(String key) {
+    public SubstitutionKeyImportResult setKey(String key) {
         return checkKey(key);
     }
 
@@ -91,7 +91,7 @@ public class SubstitutionKey {
         ) {
             stringBuilder.append(ch);
         }
-        if (setKey(stringBuilder.toString()) != SubstitutionKeyError.OK) Log.d("Key", "generateKey: ERROR GENERATING KEY");
+        if (setKey(stringBuilder.toString()) != SubstitutionKeyImportResult.OK) Log.d("Key", "generateKey: ERROR GENERATING KEY");
     }
 
     public boolean keyHas(char ch) {

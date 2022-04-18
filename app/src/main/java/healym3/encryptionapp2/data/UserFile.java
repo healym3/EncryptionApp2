@@ -118,24 +118,29 @@ public class UserFile {
         }
     }
 
-    public void importKey(Uri uri) {
+    public IVorKeyImportResult importKey(Uri uri) {
         InputStream inputStream;
         try {
             inputStream = context.getContentResolver().openInputStream(uri);
+            if(inputStream.available() != 16) return IVorKeyImportResult.INVALID_SIZE;
             byte[] keyBytes = new byte[inputStream.available()];
             if (inputStream.read(keyBytes) != -1) {
                 this.key = AES.importKey(keyBytes);
             }
 
+
         } catch (IOException | NoSuchAlgorithmException e) {
             e.printStackTrace();
+            return IVorKeyImportResult.INVALID_SIZE;
         }
+        return IVorKeyImportResult.OK;
     }
 
-    public void importIv(Uri uri) {
+    public IVorKeyImportResult importIv(Uri uri) {
         InputStream inputStream;
         try {
             inputStream = context.getContentResolver().openInputStream(uri);
+            if(inputStream.available() != 16) return IVorKeyImportResult.INVALID_SIZE;
             byte[] ivBytes = new byte[inputStream.available()];
             if (inputStream.read(ivBytes) != -1) {
                 this.iv = AES.importIv(ivBytes);
@@ -143,7 +148,9 @@ public class UserFile {
 
         } catch (IOException | NoSuchAlgorithmException e) {
             e.printStackTrace();
+            return IVorKeyImportResult.INVALID_SIZE;
         }
+        return IVorKeyImportResult.OK;
     }
     //TODO import key from file
 
@@ -254,10 +261,7 @@ public class UserFile {
         if (this.key == null) {
             generateKey();
         }
-        if (this.iv == null) {
-            this.iv = AES.generateIv();
-        }
-
+        this.iv = AES.generateIv();
 
         AES.encryptFile(algorithm.getAlgorithm(), key, iv, originalFile, encryptedFile);
         saveIvToFile();

@@ -42,4 +42,5 @@
     <string name="desLabel">DES Encryption Results</string>
     <string name="aesLabel">AES Encryption Results</string>
     <string name="title_Aes_vs_Des">AES vs DES</string>
+    <string name="origanlFileIvPlaceholder">IV auto-generated during encryption.</string>
 </resources>

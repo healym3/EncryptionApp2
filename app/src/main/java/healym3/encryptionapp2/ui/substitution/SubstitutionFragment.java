@@ -13,9 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.google.android.material.snackbar.Snackbar;
-
-import healym3.encryptionapp2.data.SubstitutionKeyError;
+import healym3.encryptionapp2.data.SubstitutionKeyImportResult;
 import healym3.encryptionapp2.databinding.FragmentSubstitutionBinding;
 import healym3.encryptionapp2.data.SubstitutionKey;
 import healym3.encryptionapp2.algorithms.Substitution;
@@ -55,8 +53,8 @@ public class SubstitutionFragment extends Fragment {
 
         binding.saveKeyButton.setOnClickListener(view -> {
             if (!TextUtils.isEmpty(binding.customKeyEditText.getText())) {
-                SubstitutionKeyError substitutionKeyError = key.setKey(binding.customKeyEditText.getText().toString());
-                switch (substitutionKeyError){
+                SubstitutionKeyImportResult substitutionKeyImportResult = key.setKey(binding.customKeyEditText.getText().toString());
+                switch (substitutionKeyImportResult){
                     case OK:
                         homeViewModel.getKey().setValue(key);
                         substitution.setKey(key);

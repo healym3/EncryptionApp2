@@ -35,8 +35,10 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 
 import healym3.encryptionapp2.data.FILE_TYPE;
+import healym3.encryptionapp2.data.IVorKeyImportResult;
 import healym3.encryptionapp2.data.UserFile;
 import healym3.encryptionapp2.databinding.FileEncryptionFragmentBinding;
+import healym3.encryptionapp2.util.Utils;
 
 @SuppressWarnings("deprecation")
 public class FileEncryptionFragment extends Fragment {
@@ -100,9 +102,19 @@ public class FileEncryptionFragment extends Fragment {
                 }
 
             }
+            else{
+                Utils.displaySnackbar(binding.importKeyButtonOriginalFile, binding.importKeyButtonOriginalFile, "No file has been opened yet.");
+            }
         });
 
-        binding.saveKeyAESButton.setOnClickListener(view -> saveKeyToFile());
+        binding.saveKeyAESButton.setOnClickListener(view -> {
+            if (originalFile != null) {
+                saveKeyToFile();
+            }
+            else{
+                Utils.displaySnackbar(binding.importKeyButtonOriginalFile, binding.importKeyButtonOriginalFile, "No file open or key loaded.");
+            }
+        });
 
         binding.encryptFileButton.setOnClickListener(view -> {
             if (originalFile != null) {
@@ -110,28 +122,59 @@ public class FileEncryptionFragment extends Fragment {
                     encryptFile();
                 }
             }
+            else{
+                Utils.displaySnackbar(binding.importKeyButtonOriginalFile, binding.importKeyButtonOriginalFile, "No file has been opened yet.");
+            }
         });
 
-        binding.emailFileButton.setOnClickListener(view -> composeEmail());
+        binding.emailFileButton.setOnClickListener(view -> {
+            if (originalFile != null) {
+                composeEmail();
+            }
+            else{
+                Utils.displaySnackbar(binding.importKeyButtonOriginalFile, binding.importKeyButtonOriginalFile, "No file has been opened yet.");
+            }
+        });
 
         binding.importKeyButtonOriginalFile.setOnClickListener(view -> {
-            if (originalFile != null) chooseOriginalKeyFromDevice();
+            if (originalFile != null) {
+                chooseOriginalKeyFromDevice();
+            }
+            else{
+                Utils.displaySnackbar(binding.importKeyButtonOriginalFile, binding.importKeyButtonOriginalFile, "No file has been opened yet.");
+            }
         });
 
         binding.openFileButtonEncryptedFile.setOnClickListener(view -> chooseEncryptedFileFromDevice());
 
         binding.importKeyButtonEncryptedFile.setOnClickListener(view -> {
-            if (encryptedFile != null) chooseEncryptedKeyFromDevice();
+            if (encryptedFile != null){
+                chooseEncryptedKeyFromDevice();
+            }
+            else{
+                Utils.displaySnackbar(binding.importKeyButtonOriginalFile, binding.importKeyButtonEncryptedFile, "No file has been opened yet.");
+            }
         });
 
         binding.importIvButtonEncryptedFile.setOnClickListener(view -> {
-            if (encryptedFile != null) chooseIvFromDevice();
+            if (encryptedFile != null) {
+                chooseIvFromDevice();
+            }
+            else{
+                Utils.displaySnackbar(binding.importKeyButtonOriginalFile, binding.importKeyButtonEncryptedFile, "No file has been opened yet.");
+            }
         });
         binding.decryptFileButton.setOnClickListener(view -> {
             if (encryptedFile != null) {
                 if ((encryptedFile.getKey() != null) && (encryptedFile.getIv() != null)) {
                     decryptFile();
                 }
+                else{
+                    Utils.displaySnackbar(binding.importKeyButtonOriginalFile, binding.importKeyButtonEncryptedFile, "Key and IV must be imported first.");
+                }
+            }
+            else{
+                Utils.displaySnackbar(binding.importKeyButtonOriginalFile, binding.importKeyButtonEncryptedFile, "No file has been opened yet.");
             }
         });
 
@@ -143,6 +186,7 @@ public class FileEncryptionFragment extends Fragment {
         try {
             originalFile.encryptOriginalFile();
             displayKeyAndIv();
+            Utils.displaySnackbar(binding.importKeyButtonOriginalFile, binding.importKeyButtonOriginalFile, "Original file encrypted successfully.");
         } catch (NoSuchAlgorithmException | IOException | IllegalBlockSizeException | InvalidKeyException | BadPaddingException | InvalidAlgorithmParameterException | NoSuchPaddingException e) {
             e.printStackTrace();
         }
@@ -151,6 +195,7 @@ public class FileEncryptionFragment extends Fragment {
     private void decryptFile() {
         try {
             encryptedFile.decryptEncryptedFile();
+            Utils.displaySnackbar(binding.importKeyButtonOriginalFile, binding.importKeyButtonEncryptedFile, "File has been decrypted successfully.");
         } catch (NoSuchAlgorithmException | IOException | IllegalBlockSizeException | InvalidKeyException | BadPaddingException | InvalidAlgorithmParameterException | NoSuchPaddingException e) {
             e.printStackTrace();
         }
@@ -277,30 +322,61 @@ public class FileEncryptionFragment extends Fragment {
             switch (requestCode) {
                 case CHOOSE_ORIGINAL_FILE_FROM_DEVICE:
                     fileEncryptionViewModel.getOriginalFile().setValue(new UserFile(FILE_TYPE.ORIGINAL, data.getData(), requireContext(), originalPath));
+                    Utils.displaySnackbar(binding.importKeyButtonOriginalFile, binding.importKeyButtonOriginalFile, "Original file imported.");
                     break;
 
                 case CHOOSE_ENCRYPTED_FILE_FROM_DEVICE:
                     fileEncryptionViewModel.getEncryptedFile().setValue(new UserFile(FILE_TYPE.ENCRYPTED, data.getData(), requireContext(), encryptedPath));
+                    Utils.displaySnackbar(binding.importKeyButtonOriginalFile, binding.importKeyButtonEncryptedFile, "Encrypted file imported.");
                     break;
 
                 case CHOOSE_ORIGINAL_KEY_FROM_DEVICE:
-                    originalFile.importKey(data.getData());
-                    updateUserKeyViewModel();
+                    IVorKeyImportResult importResultOriginal = originalFile.importKey(data.getData());
+                    switch (importResultOriginal){
+                        case OK:
+                            updateUserKeyViewModel();
+                            Utils.displaySnackbar(binding.importKeyButtonOriginalFile, binding.importKeyButtonOriginalFile, "Key imported successfully.");
+                            break;
+                        case INVALID_SIZE:
+                            Utils.displaySnackbar(binding.importKeyButtonOriginalFile, binding.importKeyButtonOriginalFile, "Import file is the wrong size.");
+                            break;
+                    }
                     break;
 
                 case CHOOSE_ENCRYPTED_KEY_FROM_DEVICE:
-                    encryptedFile.importKey(data.getData());
-                    updateUserKeyViewModel();
+                    IVorKeyImportResult importResultEncrypted = encryptedFile.importKey(data.getData());
+                    switch(importResultEncrypted){
+                        case OK:
+                            updateUserKeyViewModel();
+                            Utils.displaySnackbar(binding.importKeyButtonOriginalFile, binding.importKeyButtonEncryptedFile, "Key imported successfully.");
+                            break;
+                        case INVALID_SIZE:
+                            Utils.displaySnackbar(binding.importKeyButtonOriginalFile, binding.importKeyButtonEncryptedFile, "Import file is the wrong size.");
+                            break;
+
+                    }
                     break;
 
                 case CHOOSE_IV_FROM_DEVICE:
-                    encryptedFile.importIv(data.getData());
+                    IVorKeyImportResult importResultIV = encryptedFile.importIv(data.getData());
+                    switch(importResultIV){
+                        case OK:
+                            updateUserKeyViewModel();
+                            Utils.displaySnackbar(binding.importKeyButtonOriginalFile, binding.importKeyButtonEncryptedFile, "IV imported successfully.");
+                            break;
+                        case INVALID_SIZE:
+                            Utils.displaySnackbar(binding.importKeyButtonOriginalFile, binding.importKeyButtonEncryptedFile, "Import file is the wrong size.");
+                            break;
+                    }
                     break;
 
                 default:
                     Log.d(TAG, "onActivityResult: Error, request code unexpected: " + requestCode);
 
             }
+        }
+        else{
+            Utils.displaySnackbar(binding.importKeyButtonOriginalFile, binding.importKeyButtonOriginalFile, "Opening a file process cancelled.");
         }
 
 

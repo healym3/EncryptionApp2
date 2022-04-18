@@ -1,6 +1,6 @@
 package healym3.encryptionapp2.data;
 
-public enum SubstitutionKeyError {
+public enum SubstitutionKeyImportResult {
     OK,
     INVALID_LENGTH,
     NOT_UNIQUE,
