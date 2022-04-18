@@ -1,4 +1,4 @@
-package healym3.encryptionapp2.ui.home;
+package healym3.encryptionapp2.ui.substitution;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -6,12 +6,12 @@ import androidx.lifecycle.ViewModel;
 import healym3.encryptionapp2.algorithms.Substitution;
 import healym3.encryptionapp2.data.SubstitutionKey;
 
-public class HomeViewModel extends ViewModel {
+public class SubstitutionViewModel extends ViewModel {
 
     private final MutableLiveData<SubstitutionKey> key;
     private final MutableLiveData<Substitution> substitution;
 
-    public HomeViewModel() {
+    public SubstitutionViewModel() {
         key = new MutableLiveData<>();
         substitution = new MutableLiveData<>();
         SubstitutionKey substitutionKey = new SubstitutionKey();
