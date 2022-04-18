@@ -128,7 +128,6 @@
         android:text="@string/encryptButtonText"
         android:textColor="#000000"
         app:icon="@drawable/ic_home_lock"
-        app:layout_constraintBottom_toBottomOf="@+id/cardView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/cardView"
         tools:ignore="TextContrastCheck" />
@@ -170,7 +169,6 @@
         android:layout_height="wrap_content"
         android:text="@string/decryptButtonText"
         app:icon="@drawable/decrypt_icon"
-        app:layout_constraintBottom_toBottomOf="@+id/cardView2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/cardView2"
         tools:ignore="TextContrastCheck" />

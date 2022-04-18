@@ -66,18 +66,21 @@ public class SubstitutionFragment extends Fragment {
                         binding.customKeyEditText.setText("");
                         break;
                     case INVALID_LENGTH:
-                        displaySnackbar(binding.customKeyEditText, binding.plainEditText, "Key must be as long as alphabet");
+                        displaySnackbar(binding.customKeyEditText, binding.plainEditText, "Key must be as long as alphabet.");
                         break;
                     case NOT_UNIQUE:
-                        displaySnackbar(binding.customKeyEditText, binding.plainEditText,"Key letters must be unique");
+                        displaySnackbar(binding.customKeyEditText, binding.plainEditText,"Key letters must be unique.");
                         break;
                     case INVALID_CHARACTER:
-                        displaySnackbar(binding.customKeyEditText, binding.plainEditText,"Key letters must be from alphabet");
+                        displaySnackbar(binding.customKeyEditText, binding.plainEditText,"Key letters must be from alphabet.");
                         break;
                     default:
 
                 }
 
+            }
+            else{
+                displaySnackbar(binding.customKeyEditText, binding.plainEditText, "No custom key has been entered.");
             }
         });
 
@@ -90,6 +93,9 @@ public class SubstitutionFragment extends Fragment {
                 Log.d("Substitution", "Encrypt: " + key.toString() + "Plain: " + binding.plainEditText.getText() +
                         " Cipher: " + cipherText);
             }
+            else{
+                displaySnackbar(binding.plainEditText, binding.plainEditText, "No plain text has been entered.");
+            }
         });
 
         binding.decryptButton.setOnClickListener(view -> {
@@ -100,6 +106,9 @@ public class SubstitutionFragment extends Fragment {
                 Utils.hideSoftKeyboard(requireContext(), view);
                 Log.d("Substitution", "Decrypt: " + key.toString() + "Cipher: " + binding.cipherEditText.getText() +
                         " Cipher: " + plainText);
+            }
+            else{
+                displaySnackbar(binding.cipherEditText, binding.plainEditText, "No cipher text has been entered.");
             }
         });
 
