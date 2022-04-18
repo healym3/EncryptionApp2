@@ -106,7 +106,7 @@ public class SubstitutionFragment extends Fragment {
                         " Cipher: " + plainText);
             }
             else{
-                Utils.displaySnackbar(binding.cipherEditText, binding.plainEditText, "No cipher text has been entered.");
+                Utils.displaySnackbar(binding.cipherEditText, binding.cipherEditText, "No cipher text has been entered.");
             }
         });
 

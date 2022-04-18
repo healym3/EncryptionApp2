@@ -42,7 +42,7 @@ public class BreakerFragment extends Fragment {
                 Utils.displaySnackbar(binding.cipherToBreakEditText, binding.breakCipherButton, "Cipher breaking process completed.");
             }
             else{
-                Utils.displaySnackbar(binding.cipherToBreakEditText, binding.cipherToBreakEditText, "No cipher text has been entered or loaded from file.");
+                Utils.displaySnackbar(binding.cipherToBreakEditText, binding.breakCipherButton, "No cipher text has been entered or loaded from file.");
             }
 
         });
