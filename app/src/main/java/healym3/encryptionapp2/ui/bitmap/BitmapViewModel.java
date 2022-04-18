@@ -1,14 +1,14 @@
-package healym3.encryptionapp2.ui.aes;
+package healym3.encryptionapp2.ui.bitmap;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import healym3.encryptionapp2.data.UserFileBitmap;
 
-public class AesViewModel extends ViewModel {
+public class BitmapViewModel extends ViewModel {
     private final MutableLiveData<UserFileBitmap> userFile;
 
-    public AesViewModel() {
+    public BitmapViewModel() {
         userFile = new MutableLiveData<>();
     }
 

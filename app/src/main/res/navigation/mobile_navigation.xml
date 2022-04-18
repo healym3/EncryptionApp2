@@ -8,9 +8,9 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="healym3.encryptionapp2.ui.home.HomeFragment"
+        android:name="healym3.encryptionapp2.ui.substitution.SubstitutionFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" >
+        tools:layout="@layout/fragment_substitution" >
         <action
             android:id="@+id/action_navigation_home_to_navigation_breaker"
             app:destination="@id/navigation_breaker"
@@ -42,9 +42,9 @@
 
     <fragment
         android:id="@+id/navigation_aes"
-        android:name="healym3.encryptionapp2.ui.aes.AesFragment"
+        android:name="healym3.encryptionapp2.ui.bitmap.BitmapFragment"
         android:label="@string/title_aes"
-        tools:layout="@layout/fragment_aes" >
+        tools:layout="@layout/fragment_bitmap" >
         <action
             android:id="@+id/action_navigation_aes_to_navigation_breaker"
             app:destination="@id/navigation_breaker"
