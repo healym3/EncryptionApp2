@@ -1,4 +1,4 @@
-package healym3.encryptionapp2.ui.substitution;
+package healym3.encryptionapp2.ui.home;
 
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -12,24 +12,24 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import healym3.encryptionapp2.databinding.FragmentSubstitutionBinding;
+import healym3.encryptionapp2.databinding.FragmentHomeBinding;
 import healym3.encryptionapp2.data.SubstitutionKey;
 import healym3.encryptionapp2.algorithms.Substitution;
 import healym3.encryptionapp2.util.Utils;
 
-public class SubstitutionFragment extends Fragment {
+public class HomeFragment extends Fragment {
 
-    private FragmentSubstitutionBinding binding;
+    private FragmentHomeBinding binding;
 
     private Substitution substitution;
     private SubstitutionKey key;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        SubstitutionViewModel homeViewModel =
-                new ViewModelProvider(this).get(SubstitutionViewModel.class);
+        HomeViewModel homeViewModel =
+                new ViewModelProvider(this).get(HomeViewModel.class);
 
-        binding = FragmentSubstitutionBinding.inflate(inflater, container, false);
+        binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         final Observer<SubstitutionKey> substitutionKeyObserver = newSubstitutionKey -> {

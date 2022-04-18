@@ -1,4 +1,4 @@
-package healym3.encryptionapp2.ui.bitmap;
+package healym3.encryptionapp2.ui.aes;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -26,16 +26,16 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 
 import healym3.encryptionapp2.data.UserFileBitmap;
-import healym3.encryptionapp2.databinding.FragmentBitmapBinding;
+import healym3.encryptionapp2.databinding.FragmentAesBinding;
 
-public class BitmapFragment extends Fragment {
+public class AesFragment extends Fragment {
 
     private final int CHOOSE_BMP_FROM_DEVICE = 1010;
 
-    private FragmentBitmapBinding binding;
+    private FragmentAesBinding binding;
 
     private UserFileBitmap userFile;
-    private BitmapViewModel AESViewModel;
+    private AesViewModel AESViewModel;
 
     @Override
     public void onResume() {
@@ -49,9 +49,9 @@ public class BitmapFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         AESViewModel =
-                new ViewModelProvider(this).get(BitmapViewModel.class);
+                new ViewModelProvider(this).get(AesViewModel.class);
 
-        binding = FragmentBitmapBinding.inflate(inflater, container, false);
+        binding = FragmentAesBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         binding.buttonLoadBitmap.setOnClickListener(view -> chooseBmpFromDevice());
