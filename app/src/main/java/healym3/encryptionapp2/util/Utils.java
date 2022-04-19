@@ -61,4 +61,6 @@ public class Utils {
 
         return stringBuilder.toString();
     }
+
+    //public static saveSubstitutionKeyToFileSecure(Context context,)
 }
