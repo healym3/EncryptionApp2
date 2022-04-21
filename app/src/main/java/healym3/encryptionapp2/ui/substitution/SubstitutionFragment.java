@@ -106,6 +106,7 @@ public class SubstitutionFragment extends Fragment {
                 Utils.hideSoftKeyboard(requireContext(), view);
                 Log.d("Substitution", "Encrypt: " + key.toString() + "Plain: " + binding.plainEditText.getText() +
                         " Cipher: " + cipherText);
+                Utils.displaySnackbar(binding.plainEditText, binding.plainEditText, "Encryption completed successfully.");
             }
             else{
                 Utils.displaySnackbar(binding.plainEditText, binding.plainEditText, "No plain text has been entered.");
@@ -120,6 +121,7 @@ public class SubstitutionFragment extends Fragment {
                 Utils.hideSoftKeyboard(requireContext(), view);
                 Log.d("Substitution", "Decrypt: " + key.toString() + "Cipher: " + binding.cipherEditText.getText() +
                         " Cipher: " + plainText);
+                Utils.displaySnackbar(binding.plainEditText, binding.cipherEditText, "Decryption completed successfully.");
             }
             else{
                 Utils.displaySnackbar(binding.cipherEditText, binding.cipherEditText, "No cipher text has been entered.");
